@@ -14,7 +14,7 @@ Until the Razorpay keys are in `config.php` the site still works. The fees table
 
 ## Hosting on GitHub Pages instead
 
-Upload the same files to the repo as they are. Never upload `config.php`: a GitHub Pages repo is public. GitHub Pages can't run PHP, so the pages fall back to what's written in the HTML: the fees table still shows the full price list, the Fees page offers Call and WhatsApp to enrol, the Tutorials page shows "coming soon" and the Email button stays hidden. Everything else works the same. Use Hostinger, or any host with PHP, for payments and the live YouTube list.
+Upload the same files to the repo as they are. Never upload `config.php`: a GitHub Pages repo is public. GitHub Pages can't run PHP, so the pages fall back to what's written in the HTML: the fees table still shows the full price list, the Fees page offers Call and WhatsApp to enroll, the Tutorials page shows "coming soon" and the Email button stays hidden. Everything else works the same. Use Hostinger, or any host with PHP, for payments and the live YouTube list.
 
 ## Filling in config.php
 

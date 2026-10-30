@@ -1,6 +1,6 @@
 /* Fees page: price table and Razorpay checkout, built from api/site.php.
    Without the server (static hosting) the page keeps the table written into
-   fees.html and the Call / WhatsApp enrol box. The server always recalculates
+   fees.html and the Call / WhatsApp enroll box. The server always recalculates
    the amount it charges. */
 (function () {
   'use strict';
@@ -78,7 +78,7 @@
     function chip(name, value, label, checked) {
       var l = el('label', { 'class': 'chip' });
       var input = el('input', { type: 'radio', name: name, value: String(value) });
-      input.checked = input.defaultChecked = !!checked; // defaultChecked so "Enrol another student" resets to it
+      input.checked = input.defaultChecked = !!checked; // defaultChecked so "Enroll another student" resets to it
       l.appendChild(input);
       l.appendChild(el('span', {}, label));
       return l;
@@ -191,7 +191,7 @@
       var email = form.elements.email.value.trim();
       if (!name) return showError("Please enter the student's name.", 'name');
       if (phone.replace(/\D/g, '').length < 10) return showError('Please enter a 10-digit mobile number.', 'phone');
-      if (q.total === null) return showError('Online payment isn\'t available for this option yet. Please call us to enrol.');
+      if (q.total === null) return showError('Online payment isn\'t available for this option yet. Please call us to enroll.');
 
       setBusy(true, 'Starting payment…');
       Promise.all([

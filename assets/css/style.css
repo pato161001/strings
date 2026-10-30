@@ -220,7 +220,7 @@ ul, ol { margin: 0; }
 }
 /* About: illustration beside the guitar-and-ukulele text */
 .teach { display: flex; flex-wrap: wrap; align-items: center; gap: 48px 80px; }
-.teach__art { flex: 0 1 360px; min-width: 0; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-bottom: 10px solid var(--yellow); }
+.teach__art { flex: 0 1 360px; min-width: 0; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border: 4px solid var(--yellow); }
 .teach__text { flex: 1 1 440px; min-width: 0; }
 /* About: on stage */
 .live-grid { margin-top: 40px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -348,7 +348,7 @@ ul, ol { margin: 0; }
 .about-hero__text .lede + p { margin-top: 18px; color: var(--muted); max-width: 560px; }
 .portrait { flex: 0 1 400px; min-width: 0; }
 .portrait__frame {
-  position: relative; aspect-ratio: 3 / 4; border: 12px solid var(--yellow);
+  position: relative; aspect-ratio: 3 / 4; border: 4px solid var(--yellow);
   background: var(--surface); box-shadow: 0 26px 56px rgba(0,0,0,.55);
   overflow: hidden;
 }
@@ -608,7 +608,12 @@ ul, ol { margin: 0; }
   .js .poster[data-reveal].in { transform: none; }
 }
 
-@media (max-width: 640px) { .nav__brand img { height: 42px; } .site-footer__brand { height: 60px; } }
+@media (max-width: 640px) {
+  .nav__brand img { height: 42px; } .site-footer__brand { height: 60px; }
+  .nav { flex-direction: column; justify-content: center; text-align: center; }
+  .nav__links { justify-content: center; gap: 6px 24px; }
+}
+@media (max-width: 359px) { .nav__links { gap: 6px 16px; letter-spacing: .04em; } }
 
 /* Anything marked hidden stays hidden, even when a class sets display */
 [hidden] { display: none !important; }

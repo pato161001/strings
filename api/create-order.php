@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     json_response(['ok' => false, 'error' => 'Method not allowed'], 405);
 }
 if (!razorpay_configured()) {
-    json_response(['ok' => false, 'error' => 'Online payment isn\'t switched on yet. Please call us to enrol.'], 503);
+    json_response(['ok' => false, 'error' => 'Online payment isn\'t switched on yet. Please call us to enroll.'], 503);
 }
 
 $in = json_input();

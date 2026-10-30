@@ -100,7 +100,7 @@ function fee_quote(array $in): array
     }
     $monthly = fee_monthly($slot, $days, $classes);
     if ($monthly === null) {
-        return ['ok' => false, 'error' => 'Online payment isn\'t available for this option yet. Please call us to enrol.'];
+        return ['ok' => false, 'error' => 'Online payment isn\'t available for this option yet. Please call us to enroll.'];
     }
 
     $subtotal = $monthly * $months;
