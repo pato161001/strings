@@ -608,7 +608,12 @@ ul, ol { margin: 0; }
   .js .poster[data-reveal].in { transform: none; }
 }
 
-@media (max-width: 640px) { .nav__brand img { height: 42px; } .site-footer__brand { height: 60px; } }
+@media (max-width: 640px) {
+  .nav__brand img { height: 42px; } .site-footer__brand { height: 60px; }
+  .nav { flex-direction: column; justify-content: center; text-align: center; }
+  .nav__links { justify-content: center; gap: 6px 24px; }
+}
+@media (max-width: 359px) { .nav__links { gap: 6px 16px; letter-spacing: .04em; } }
 
 /* Anything marked hidden stays hidden, even when a class sets display */
 [hidden] { display: none !important; }
