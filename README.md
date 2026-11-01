@@ -1,6 +1,6 @@
 # The Strings Theory — website
 
-Seven-page site for The Strings Theory, a guitar and ukulele school with studios in Basanti Nagar and Chhend Colony (Rourkela) and SBI Colony, Kesora (Bhubaneswar): Home, About, Fees (with Razorpay payments), Tutorials (pulled from YouTube), a syllabus page each for guitar and ukulele, and Book a demo (online demo booking with automatic Google Meet links). The pages are plain `.html` files. A few small PHP scripts in `api/` supply the fees, take payments and fetch the YouTube list. No database and no build step; it runs on any Hostinger-style shared hosting with PHP 8, and the same files also work on GitHub Pages (without payments).
+Seven-page site for The Strings Theory, a guitar and ukulele school with studios in Basanti Nagar and Chhend Colony (Rourkela) and SBI Colony, Kesora (Bhubaneswar): Home, About, Fees (with Razorpay payments), Tutorials (every playlist from the YouTube channel), a syllabus page each for guitar and ukulele, and Book a demo (online demo booking with automatic Google Meet links). The pages are plain `.html` files. A few small PHP scripts in `api/` supply the fees and take payments; a Google Apps Script in Deepak's Google account handles demo booking and the YouTube playlists. No database and no build step; it runs on any Hostinger-style shared hosting with PHP 8, and the same files also work on GitHub Pages (without payments).
 
 ## Going live on Hostinger
 
@@ -14,7 +14,7 @@ Until the Razorpay keys are in `config.php` the site still works. The fees table
 
 ## Hosting on GitHub Pages instead
 
-Upload the same files to the repo as they are. Never upload `config.php`: a GitHub Pages repo is public. GitHub Pages can't run PHP, so the pages fall back to what's written in the HTML: the fees table still shows the full price list, the Fees page offers Call and WhatsApp to enroll, the Tutorials page shows "coming soon" and the Email button stays hidden. Everything else works the same. Use Hostinger, or any host with PHP, for payments and the live YouTube list.
+Upload the same files to the repo as they are. Never upload `config.php`: a GitHub Pages repo is public. GitHub Pages can't run PHP, so the pages fall back to what's written in the HTML: the fees table still shows the full price list, the Fees page offers Call and WhatsApp to enroll, and the Email button stays hidden. Everything else works the same, including demo booking and the Tutorials playlists (they run through the Google Apps Script, not PHP). Use Hostinger, or any host with PHP, for online fee payments.
 
 ## Filling in config.php
 
@@ -34,14 +34,15 @@ PayPal isn't connected to the site; online payment goes through Razorpay in rupe
 
 Every order and verified payment is written to `storage/logs/payments.log` (student name, phone, plan, amount, payment ID). Razorpay's dashboard is the official record.
 
-**YouTube** (`youtube`):
-1. Google Cloud Console → create a project → enable "YouTube Data API v3" → Credentials → create an API key. Restrict it to the YouTube Data API.
-2. Get the channel ID (starts with `UC`): YouTube Studio → Settings → Channel → Advanced settings.
-3. Put both in config, plus the public channel link for the Subscribe button.
+## Google Apps Script: demo booking and Tutorials playlists
 
-The site asks YouTube for the video list at most once an hour (`cache_minutes`) and keeps the last good list if YouTube is unreachable. Videos are sorted into Guitar, Ukulele and Theory from words in their titles ("ukulele", "chords", "scale"…); anything else goes under More, and tagged beginner, intermediate or advanced the same way. To refresh immediately after uploading, delete `storage/cache/youtube.json`.
+One small script in Deepak's Google account (`apps-script/`) does two jobs: online demo booking, and the YouTube playlists on the Tutorials page. Its web app link goes in `assets/js/booking-config.js`.
 
-## Online demo booking (Book a demo page)
+### Tutorials page
+
+The page shows Deepak's channel ([@stringstheory](https://www.youtube.com/@stringstheory)): a big player, a Latest uploads row, a jump menu, and one section per public playlist with Play all, On YouTube and a scrolling row of videos. Clicking a video plays it in the big player and carries on through that playlist. New uploads and playlists appear on their own within an hour (`YOUTUBE_CACHE_MINUTES`); empty and private items are left out. The playlists follow the order YouTube lists them in. If the script can't be reached, the player still plays the channel's latest uploads and a button links to the playlists on YouTube.
+
+### Online demo booking (Book a demo page)
 
 Students pick a date and a time on `book-demo.html`, fill in their details and get a Google Meet link on the spot, with a Copy button. Behind it is a small Google Apps Script that runs in Deepak's own Google account:
 
@@ -58,11 +59,13 @@ It works the same on GitHub Pages and Hostinger, and needs no server keys. Until
 2. Delete what's in `Code.gs` and paste in everything from `apps-script/Code.gs`.
 3. Click **Project Settings** (the gear icon) and tick **Show "appsscript.json" manifest file in editor**. Back in the **Editor**, open `appsscript.json` and replace its contents with `apps-script/appsscript.json`. This switches on the Google Calendar service the script uses.
 4. Look over the `CONFIG` block at the top of `Code.gs`: demo hours for each day, demo length, how far ahead students can book, and minimum notice. Save (Ctrl + S).
-5. Pick **setupCheck** in the function list at the top and click **Run**. Google asks for permission: **Review permissions**, choose the account, then **Advanced → Go to The Strings Theory demo booking (unsafe) → Allow**. (The warning appears for any private script; it only gets access to this account's calendar and email.) The log should say "Calendar connected" and how many slots are open.
+5. Pick **setupCheck** in the function list at the top and click **Run**. Google asks for permission: **Review permissions**, choose the account, then **Advanced → Go to The Strings Theory demo booking (unsafe) → Allow**. (The warning appears for any private script; it only gets access to this account's calendar and email.) The log should say "Calendar connected" with the number of open slots, and "YouTube connected" with the number of playlists.
 6. Click **Deploy → New deployment**, choose the type **Web app**, set **Execute as: Me** and **Who has access: Anyone**, then **Deploy**. Copy the **Web app URL** (it ends in `/exec`).
 7. Paste that URL between the quotes in `assets/js/booking-config.js` and upload that file.
 
 To change the demo hours later, edit `CONFIG`, save, then **Deploy → Manage deployments → ✏️ → Version: New version → Deploy**. The URL stays the same, so the website doesn't need changing.
+
+**Updating to a new version of the script** (for example when the Tutorials playlists were added): paste the new `Code.gs` and `appsscript.json` over the old ones, save, run **setupCheck** once more and allow the new permission it asks for (read-only access to YouTube), then **Deploy → Manage deployments → ✏️ → Version: New version → Deploy**.
 
 Google Meet links from a personal Gmail account are free; one-to-one calls have no practical time limit, so 30-minute demos are fine.
 
@@ -70,7 +73,7 @@ Google Meet links from a personal Gmail account are free; one-to-one calls have 
 
 - Weekly opening hours (`school.hours`)
 - School email address
-- Razorpay account and keys; YouTube API key and channel ID
+- Razorpay account and keys
 - Set up the demo booking script in his Google account (steps above), and confirm the demo hours and length
 - Parents' permission for the class photos that show children
 - Confirm the songs on the Home page setlist are ones he teaches (edit in `index.html`)
@@ -89,19 +92,18 @@ guitar-syllabus.html, ukulele-syllabus.html,
 book-demo.html                                  pages (each has its own copy of the top bar, footer,
                                                     floating contact buttons and enquiry form; edit all seven)
 assets/css/style.css                            all styles
-assets/js/site.js                               reads api/site.php and fills in email, hours, batch timings, YouTube link
+assets/js/site.js                               reads api/site.php and fills in email, hours and batch timings
 assets/js/main.js                               enquiry form → opens WhatsApp with the details filled in
 assets/js/fees.js                               fee table, notes and Razorpay checkout, from api/site.php
-assets/js/tutorials.js                          video list, instrument filters and player, from api/videos.php
+assets/js/tutorials.js                          Tutorials: player, jump menu and a row per YouTube playlist, from the Apps Script
 assets/js/gallery.js                            circular photo gallery in the Home page's Private classes section
 assets/js/booker.js                             Book a demo: calendar, time slots, form and the Meet link screen
-assets/js/booking-config.js                     the Google Apps Script link the booker talks to (one line)
+assets/js/booking-config.js                     the Google Apps Script link (one line), used by Book a demo and Tutorials
 apps-script/                                    the booking backend that runs in Deepak's Google account (see below)
 api/site.php                                    public settings from config.php (no keys)
-api/videos.php                                  Deepak's YouTube uploads, cached
 api/create-order.php                            creates a Razorpay order for the server-calculated amount
 api/verify-payment.php                          checks Razorpay's payment signature and logs the payment
-lib/                                            settings loader, fee maths, Razorpay and YouTube helpers
+lib/                                            settings loader, fee maths and Razorpay helpers
 storage/                                        cache and logs (blocked from the web)
 ```
 

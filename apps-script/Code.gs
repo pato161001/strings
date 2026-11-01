@@ -5,6 +5,8 @@
  *  - GET  ?action=slots  returns the open and booked demo slots for the next few days,
  *                        worked out from his Google Calendar (anything already in his
  *                        calendar blocks that time).
+ *  - GET  ?action=youtube  returns the YouTube channel's latest uploads and every public
+ *                        playlist with its videos, for the website's Tutorials page.
  *  - POST {action:"book", ...}  books a slot: creates an event in his calendar with a
  *                        Google Meet link, invites the student if they gave an email,
  *                        and returns the Meet link to the website.
@@ -32,7 +34,11 @@ var CONFIG = {
   NOTIFY_EMAIL: '',                // who gets a "new demo booked" email. Empty = the account running the script.
   SCHOOL_NAME: 'The Strings Theory',
   SCHOOL_WHATSAPP: '917008896377',
-  INSTRUMENTS: ['Guitar', 'Ukulele']
+  INSTRUMENTS: ['Guitar', 'Ukulele'],
+  // Tutorials page
+  YOUTUBE_CHANNEL_ID: 'UCOvTby3dG8NA0L4EDv21laQ',   // The Strings Theory (@stringstheory)
+  YOUTUBE_CACHE_MINUTES: 60,       // new uploads and playlists show up on the site within this time
+  YOUTUBE_MAX_PER_PLAYLIST: 50
 };
 
 var DAY_KEYS = ['', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']; // Utilities 'u': 1 = Monday
@@ -43,11 +49,12 @@ function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) || 'slots';
   try {
     if (action === 'slots') return json_(getSlots_());
+    if (action === 'youtube') return json_(getYouTube_(e.parameter.fresh === '1'));
     if (action === 'ping') return json_({ ok: true });
     return json_({ ok: false, error: 'Unknown request.' });
   } catch (err) {
     console.error(err);
-    return json_({ ok: false, error: 'Could not load the available times. Please try again.' });
+    return json_({ ok: false, error: action === 'youtube' ? 'Could not load the videos.' : 'Could not load the available times. Please try again.' });
   }
 }
 
@@ -318,10 +325,121 @@ function notifyOwner_(name, instrument, level, phone, email, notes, label, meetU
   }
 }
 
+/* ---------- YouTube (Tutorials page) ---------- */
+
+function getYouTube_(fresh) {
+  var cache = CacheService.getScriptCache();
+  if (!fresh) {
+    var hit = cacheGet_(cache, 'yt');
+    if (hit) return hit;
+  }
+  var data = fetchYouTube_();
+  cachePut_(cache, 'yt', data, CONFIG.YOUTUBE_CACHE_MINUTES * 60);
+  return data;
+}
+
+function fetchYouTube_() {
+  var id = CONFIG.YOUTUBE_CHANNEL_ID;
+  var ch = (YouTube.Channels.list('snippet,contentDetails,statistics', { id: id }).items || [])[0];
+  if (!ch) return { ok: false, error: 'Channel not found.' };
+  var uploadsId = ch.contentDetails.relatedPlaylists.uploads;
+
+  var playlists = [];
+  var token = null;
+  do {
+    var page = YouTube.Playlists.list('snippet,contentDetails', { channelId: id, maxResults: 50, pageToken: token || undefined });
+    (page.items || []).forEach(function (pl) {
+      playlists.push({ id: pl.id, title: pl.snippet.title, description: (pl.snippet.description || '').slice(0, 280), count: pl.contentDetails.itemCount, thumb: bestThumb_(pl.snippet.thumbnails) });
+    });
+    token = page.nextPageToken;
+  } while (token);
+
+  var all = {};
+  function items(playlistId, limit) {
+    var out = [], tok = null;
+    do {
+      var res = YouTube.PlaylistItems.list('snippet,contentDetails,status', { playlistId: playlistId, maxResults: 50, pageToken: tok || undefined });
+      (res.items || []).forEach(function (it) {
+        var vid = it.contentDetails && it.contentDetails.videoId;
+        var privacy = it.status && it.status.privacyStatus;
+        if (!vid || privacy === 'private' || privacy === 'privacyStatusUnspecified') return;
+        if (it.snippet.title === 'Private video' || it.snippet.title === 'Deleted video') return;
+        out.push(vid);
+        if (!all[vid]) all[vid] = { id: vid, title: it.snippet.title, published: it.contentDetails.videoPublishedAt || it.snippet.publishedAt || '', thumb: bestThumb_(it.snippet.thumbnails) };
+      });
+      tok = res.nextPageToken;
+    } while (tok && out.length < limit);
+    return out.slice(0, limit);
+  }
+
+  var latest = items(uploadsId, 12);
+  playlists.forEach(function (pl) { pl.videos = items(pl.id, CONFIG.YOUTUBE_MAX_PER_PLAYLIST); });
+  playlists = playlists.filter(function (pl) { return pl.videos.length; });
+
+  // Durations, 50 videos per request
+  var ids = Object.keys(all);
+  for (var i = 0; i < ids.length; i += 50) {
+    var vres = YouTube.Videos.list('contentDetails', { id: ids.slice(i, i + 50).join(','), maxResults: 50 });
+    (vres.items || []).forEach(function (v) { if (all[v.id]) all[v.id].duration = isoDuration_(v.contentDetails.duration); });
+  }
+  function expand(list) { return list.map(function (vid) { return all[vid]; }); }
+
+  return {
+    ok: true,
+    updated: new Date().toISOString(),
+    channel: {
+      id: id,
+      title: ch.snippet.title,
+      handle: ch.snippet.customUrl || '',
+      url: 'https://www.youtube.com/' + (ch.snippet.customUrl || ('channel/' + id)),
+      thumb: bestThumb_(ch.snippet.thumbnails),
+      videos: Number(ch.statistics.videoCount || 0),
+      subscribers: ch.statistics.hiddenSubscriberCount ? null : Number(ch.statistics.subscriberCount || 0)
+    },
+    uploads: { id: uploadsId, videos: expand(latest) },
+    playlists: playlists.map(function (pl) { pl.videos = expand(pl.videos); return pl; })
+  };
+}
+
+function bestThumb_(t) {
+  t = t || {};
+  var pick = t.high || t.medium || t.standard || t.maxres || t['default'];
+  return pick ? pick.url : '';
+}
+
+/** PT1H2M3S -> 1:02:03, PT4M5S -> 4:05 */
+function isoDuration_(iso) {
+  var m = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/.exec(iso || '');
+  if (!m) return '';
+  var h = +(m[1] || 0), min = +(m[2] || 0), sec = +(m[3] || 0);
+  var ss = String(sec).padStart(2, '0');
+  return h ? h + ':' + String(min).padStart(2, '0') + ':' + ss : min + ':' + ss;
+}
+
+// CacheService keeps up to 100 KB per key, so big results are split into parts.
+function cachePut_(cache, key, obj, seconds) {
+  var s = JSON.stringify(obj), size = 90000, parts = Math.ceil(s.length / size), map = {};
+  for (var i = 0; i < parts; i++) map[key + '_' + i] = s.slice(i * size, (i + 1) * size);
+  map[key + '_n'] = String(parts);
+  try { cache.putAll(map, Math.min(seconds, 21600)); } catch (err) { console.error('cache put failed', err); }
+}
+function cacheGet_(cache, key) {
+  var n = Number(cache.get(key + '_n') || 0);
+  if (!n) return null;
+  var names = [];
+  for (var i = 0; i < n; i++) names.push(key + '_' + i);
+  var got = cache.getAll(names), s = '';
+  for (var j = 0; j < n; j++) { if (got[names[j]] == null) return null; s += got[names[j]]; }
+  try { return JSON.parse(s); } catch (err) { return null; }
+}
+
 /** Run this once from the editor to grant permissions and check everything works. */
 function setupCheck() {
   var slots = getSlots_();
   var open = 0;
   Object.keys(slots.days).forEach(function (d) { slots.days[d].forEach(function (s) { if (s.open) open++; }); });
   console.log('Calendar connected. Open demo slots in the next ' + CONFIG.DAYS_AHEAD + ' days: ' + open);
+  var yt = getYouTube_(true);
+  if (yt.ok) console.log('YouTube connected: ' + yt.channel.title + ', ' + yt.playlists.length + ' playlists, ' + yt.uploads.videos.length + ' latest uploads.');
+  else console.log('YouTube: ' + yt.error);
 }

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Free Guitar &amp; Ukulele Tutorials | The Strings Theory</title>
-<meta name="description" content="Free video lessons from Deepak of The Strings Theory, Rourkela, sorted by instrument and level.">
+<meta name="description" content="Free guitar and ukulele video lessons from Deepak of The Strings Theory, sorted into playlists from his YouTube channel.">
 <link rel="canonical" href="https://www.thestringstheory.in/tutorials.html">
 <meta name="theme-color" content="#0A0A0A">
 <script>document.documentElement.classList.add('js');</script>
@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="The Strings Theory">
 <meta property="og:title" content="Free Guitar &amp; Ukulele Tutorials | The Strings Theory">
-<meta property="og:description" content="Free video lessons from Deepak of The Strings Theory, Rourkela, sorted by instrument and level.">
+<meta property="og:description" content="Free guitar and ukulele video lessons from Deepak of The Strings Theory, sorted into playlists from his YouTube channel.">
 <meta property="og:url" content="https://www.thestringstheory.in/tutorials.html">
 <meta property="og:image" content="https://www.thestringstheory.in/assets/img/hero-stage-bw.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=17">
+<link rel="stylesheet" href="assets/css/style.css?v=19">
 </head>
 <body class="page-tutorials">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -46,27 +46,44 @@
 <div class="container tut-head">
   <div class="tut-head__text">
     <h1 class="h-xl">Free lessons</h1>
-    <p class="lede">Every tutorial from Deepak's YouTube channel, sorted by instrument and level. New videos show up here on their own.</p>
-    <a class="btn btn--gold" href="#" data-site-href="youtube.channel_url" data-suffix="?sub_confirmation=1" rel="noopener" target="_blank" hidden>Subscribe on YouTube</a>
+    <p class="lede">Deepak's guitar and ukulele lessons from YouTube, sorted into playlists. Pick a playlist, press play and practise along.</p>
+    <a class="yt-card" href="https://www.youtube.com/@stringstheory" target="_blank" rel="noopener">
+      <img class="yt-card__avatar" src="assets/img/favicon-192.png" alt="" width="56" height="56" data-yt-avatar>
+      <span class="yt-card__text">
+        <strong>The Strings Theory</strong>
+        <span data-yt-stats>@stringstheory on YouTube</span>
+      </span>
+    </a>
+    <div class="actions tut-head__actions">
+      <a class="btn btn--gold" href="https://www.youtube.com/@stringstheory?sub_confirmation=1" target="_blank" rel="noopener">Subscribe on YouTube</a>
+    </div>
   </div>
 
   <figure class="player" id="player">
     <div class="player__frame">
-      <p class="player__empty">New lessons are on their way.</p>
+      <a class="player__start" href="https://www.youtube.com/@stringstheory/videos" target="_blank" rel="noopener" data-play-list="UUOvTby3dG8NA0L4EDv21laQ">
+        <span class="player__start-icon" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg></span>
+        <span>Play the latest lessons</span>
+      </a>
     </div>
-    <figcaption hidden>
-      <span class="player__label" data-player-label>Latest upload</span>
-      <span class="player__title" data-player-title></span>
+    <figcaption>
+      <span class="player__label" data-player-label>Latest uploads</span>
+      <span class="player__title" data-player-title>The Strings Theory on YouTube</span>
+      <span class="player__from" data-player-from></span>
     </figcaption>
   </figure>
 </div>
 
-<!-- Filled in by assets/js/tutorials.js from api/videos.php -->
-<div class="container" id="tutorials">
-  <div class="empty-state">
-    <h2>Tutorials are coming soon</h2>
-    <p>In the meantime, follow us on <a href="https://www.instagram.com/the_stringstheory/" rel="noopener">Instagram</a> or book a first lesson with Deepak.</p>
-    <div class="actions" style="margin-top: 24px"><a class="btn btn--gold" href="fees.html">See fees and enroll</a></div>
+<!-- Playlists: built by assets/js/tutorials.js from the Google Apps Script (see booking-config.js) -->
+<div id="tutorials">
+  <div class="container">
+    <div class="tut-fallback">
+      <h2 class="h-md">Every lesson, sorted into playlists</h2>
+      <p class="lede">Browse all of Deepak's playlists on YouTube, or press play above for the newest lessons.</p>
+      <div class="actions" style="margin-top: 24px">
+        <a class="btn btn--gold" href="https://www.youtube.com/@stringstheory/playlists" target="_blank" rel="noopener">See the playlists on YouTube</a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -166,6 +183,7 @@
 
 <script src="assets/js/site.js?v=1" defer></script>
 <script src="assets/js/main.js?v=6" defer></script>
-<script src="assets/js/tutorials.js?v=2" defer></script>
+<script src="assets/js/booking-config.js?v=2" defer></script>
+<script src="assets/js/tutorials.js?v=3" defer></script>
 </body>
 </html>

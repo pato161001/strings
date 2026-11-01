@@ -1,17 +1,11 @@
 <?php
 /**
- * GET -> public site settings the .html pages read: contact details, fees,
- * whether online payment is on, and the YouTube channel link.
- * Nothing secret is returned (no Razorpay or YouTube keys).
+ * GET -> public site settings the .html pages read: contact details, fees
+ * and whether online payment is on. Nothing secret is returned (no Razorpay keys).
  */
 require dirname(__DIR__) . '/lib/bootstrap.php';
 require TST_ROOT . '/lib/fees.php';
 require TST_ROOT . '/lib/razorpay.php';
-
-$channelUrl = (string) config('youtube.channel_url');
-if ($channelUrl === '' && config('youtube.channel_id')) {
-    $channelUrl = 'https://www.youtube.com/channel/' . config('youtube.channel_id');
-}
 
 json_response([
     'ok' => true,
@@ -38,5 +32,4 @@ json_response([
         'batch_timings' => (string) config('fees.batch_timings'),
     ],
     'pay_online' => razorpay_configured() && fees_configured(),
-    'youtube' => ['channel_url' => $channelUrl],
 ]);

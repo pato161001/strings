@@ -58,14 +58,4 @@ return [
         'key_id'     => '',
         'key_secret' => '',
     ],
-
-    // YouTube Data API v3: create a key in Google Cloud Console and enable "YouTube Data API v3".
-    // channel_id starts with "UC" (YouTube Studio → Settings → Channel → Advanced settings).
-    'youtube' => [
-        'api_key'       => '',
-        'channel_id'    => '',
-        'channel_url'   => '',                      // public link for the Subscribe button
-        'cache_minutes' => 60,                      // how long to reuse the video list before asking YouTube again
-        'max_videos'    => 150,
-    ],
 ];
