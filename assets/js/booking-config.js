@@ -2,4 +2,4 @@
    (it looks like https://script.google.com/macros/s/AKfy.../exec).
    Leave it empty to show "WhatsApp us to book a demo" instead of the calendar.
    Setup steps: README, "Online demo booking". */
-window.TST_BOOKING_URL = '';
+window.TST_BOOKING_URL = 'https://script.google.com/macros/s/AKfycbzVD2KyjRIoQ-x2J-g3ChIqfmdoE0tgXGr0tpi1R7dqpzVPEYKX8fVFFyCLtxaXdFxf/exec';
