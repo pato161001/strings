@@ -1,6 +1,7 @@
-/* Book a demo: month calendar, time slots (booked ones shown struck through),
-   student details, then a Google Meet link the student can copy.
-   Talks to the Google Apps Script web app set in booking-config.js. */
+/* Book a demo: month calendar, time slots (booked ones shown struck through) and
+   student details. Free times come from Deepak's Google Calendar through the Google
+   Apps Script set in booking-config.js. Submitting opens WhatsApp with the request
+   ready to send to Deepak, who confirms and sends the Google Meet link. */
 (function () {
   'use strict';
 
@@ -24,11 +25,10 @@
   var form = document.getElementById('demo-form');
   var summary = form.querySelector('.booker__summary');
   var errorBox = form.querySelector('.form-error');
-  var submit = form.querySelector('[type="submit"]');
 
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  var data = null, keys = [], viewYear = 0, viewMonth = 0, selectedDay = null, chosen = null, busy = false;
+  var data = null, keys = [], viewYear = 0, viewMonth = 0, selectedDay = null, chosen = null;
 
   // Show the visitor's own time next to IST if they are in another time zone (NRI students).
   var localTz = '';
@@ -235,11 +235,14 @@
   }
 
   form.addEventListener('input', clearError);
+  var schoolWa = (root.getAttribute('data-whatsapp') || '917008896377').replace(/\D/g, '');
+  var lastWaUrl = '';
+
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
-    if (busy) return;
     clearError();
     var f = form.elements;
+    if (f.website.value) return; // bots fill the hidden field
     var instrument = (form.querySelector('[name="instrument"]:checked') || {}).value;
     if (!chosen) { showError('Please pick a date and a time first.'); slotWrap.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
     if (!instrument) return showError('Please choose an instrument.');
@@ -248,95 +251,41 @@
     var email = f.email.value.trim();
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError("That email address doesn't look right.", 'email');
 
-    busy = true;
-    submit.disabled = true;
-    submit.textContent = 'Booking your demo…';
-    var payload = {
-      action: 'book', start: chosen.t, instrument: instrument, level: f.level.value,
-      name: f.name.value.trim(), phone: f.phone.value.trim(), email: email,
-      notes: f.notes.value.trim(), website: f.website.value
-    };
-    // text/plain keeps this a "simple" request, which Apps Script accepts from any site
-    fetch(endpoint, { method: 'POST', body: JSON.stringify(payload) })
-      .then(function (r) { return r.json(); })
-      .then(function (res) {
-        if (res && res.ok && res.booking) return showDone(res.booking, payload);
-        if (res && res.ok) return; // spam trap
-        var msg = (res && res.error) || 'We could not book that slot. Please try again.';
-        if (res && res.code === 'taken' || res && res.code === 'invalid') {
-          chosen = null; renderSummary();
-          return load(true).then(function () { showError(msg); });
-        }
-        showError(msg, res && res.field);
-      })
-      .catch(function () { showError('We could not reach the booking system. Check your connection and try again, or WhatsApp us.'); })
-      .then(function () {
-        busy = false;
-        submit.disabled = false;
-        submit.textContent = 'Book my demo';
-      });
+    var when = niceDay(chosen.day) + ' at ' + chosen.label + ' IST';
+    var mine = localDiffers(chosen.t) ? ' (' + fmtTime(chosen.t, localTz) + ' my time)' : '';
+    var lines = [
+      "Hi Deepak, I'd like to book an online demo.",
+      '',
+      'Date and time: ' + when + mine,
+      'Instrument: ' + instrument,
+      'Level: ' + f.level.value,
+      "Student's name: " + f.name.value.trim(),
+      'WhatsApp: ' + f.phone.value.trim()
+    ];
+    if (email) lines.push('Email: ' + email);
+    if (f.notes.value.trim()) lines.push('Notes: ' + f.notes.value.trim());
+    lines.push('', 'Please confirm and send me the Google Meet link.');
+    lastWaUrl = 'https://wa.me/' + schoolWa + '?text=' + encodeURIComponent(lines.join('\n'));
+
+    var win = window.open(lastWaUrl, '_blank');
+    if (win) { try { win.opener = null; } catch (e) { /* ignore */ } }
+    showDone(when + mine, instrument, !win);
   });
 
   /* ---------- done ---------- */
 
-  function gcalDate(iso) { return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
-
-  function showDone(b, p) {
+  function showDone(when, instrument, blocked) {
     grid.hidden = true;
     done.hidden = false;
-    var when = niceDay(chosen.day) + ' at ' + chosen.label;
-    done.querySelector('[data-done-when]').textContent = when + ' IST';
-    done.querySelector('[data-done-what]').textContent = (b.minutes || data.minutes) + '-minute ' + p.instrument.toLowerCase() + ' demo with Deepak' +
-      (localDiffers(b.start) ? ' (' + fmtTime(b.start, localTz) + ' your time)' : '') + '.';
-
-    var meetBox = done.querySelector('.meet-box');
-    var noMeet = done.querySelector('[data-no-meet]');
-    var url = b.meetUrl || '';
-    meetBox.hidden = !url;
-    noMeet.hidden = !!url;
-    done.querySelector('[data-meet-url]').textContent = url;
-    var join = done.querySelector('[data-join]');
-    join.hidden = !url;
-    join.href = url || '#';
-
-    var details = 'Online ' + p.instrument.toLowerCase() + ' demo with Deepak, The Strings Theory.' + (url ? '\nJoin: ' + url : '');
-    var gcal = done.querySelector('[data-gcal]');
-    gcal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
-      '&text=' + encodeURIComponent(p.instrument + ' demo, The Strings Theory') +
-      '&dates=' + gcalDate(b.start) + '/' + gcalDate(b.end) +
-      '&details=' + encodeURIComponent(details) + (url ? '&location=' + encodeURIComponent(url) : '');
-    done.querySelector('[data-wa-save]').href = 'https://wa.me/?text=' +
-      encodeURIComponent('My ' + p.instrument.toLowerCase() + ' demo with The Strings Theory: ' + when + ' IST.' + (url ? '\nGoogle Meet: ' + url : ''));
-    done.querySelector('[data-invite-note]').textContent = b.invited
-      ? 'We have also emailed a calendar invite to ' + p.email + '.'
-      : 'Save the link now: add it to your calendar or send it to yourself on WhatsApp.';
+    done.querySelector('[data-done-when]').textContent = when;
+    done.querySelector('[data-done-what]').textContent = (data.minutes || 30) + '-minute online ' + instrument.toLowerCase() + ' demo with Deepak.';
+    done.querySelector('[data-wa-open]').href = lastWaUrl;
+    done.querySelector('[data-blocked]').hidden = !blocked;
     done.focus();
     done.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
-  var copyBtn = done.querySelector('[data-copy]');
-  var copyStatus = done.querySelector('[data-copy-status]');
-  copyBtn.addEventListener('click', function () {
-    var text = done.querySelector('[data-meet-url]').textContent;
-    function ok() {
-      copyBtn.textContent = 'Copied';
-      copyStatus.textContent = 'Meet link copied.';
-      setTimeout(function () { copyBtn.textContent = 'Copy link'; copyStatus.textContent = ''; }, 2500);
-    }
-    function fallback() {
-      var ta = document.createElement('textarea');
-      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select();
-      try { document.execCommand('copy'); ok(); } catch (e) { copyStatus.textContent = 'Select the link and copy it.'; }
-      document.body.removeChild(ta);
-    }
-    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(ok, fallback);
-    else fallback();
-  });
-
   done.querySelector('[data-again]').addEventListener('click', function () {
-    form.reset();
-    if (wanted) { var r = form.querySelector('[name="instrument"][value="' + wanted + '"]'); if (r) r.checked = true; }
     chosen = null;
     done.hidden = true;
     grid.hidden = false;

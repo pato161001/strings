@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book an Online Demo | The Strings Theory</title>
-<meta name="description" content="Book an online guitar or ukulele demo session with Deepak of The Strings Theory. Pick a free slot in the calendar and get your Google Meet link straight away.">
+<meta name="description" content="Book an online guitar or ukulele demo session with Deepak of The Strings Theory. Pick a free slot, send your request on WhatsApp, and Deepak sends your Google Meet link.">
 <link rel="canonical" href="https://www.thestringstheory.in/book-demo.html">
 <meta name="theme-color" content="#0A0A0A">
 <script>document.documentElement.classList.add('js');</script>
@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="The Strings Theory">
 <meta property="og:title" content="Book an Online Demo | The Strings Theory">
-<meta property="og:description" content="Book an online guitar or ukulele demo session with Deepak of The Strings Theory. Pick a free slot in the calendar and get your Google Meet link straight away.">
+<meta property="og:description" content="Book an online guitar or ukulele demo session with Deepak of The Strings Theory. Pick a free slot, send your request on WhatsApp, and Deepak sends your Google Meet link.">
 <meta property="og:url" content="https://www.thestringstheory.in/book-demo.html">
 <meta property="og:image" content="https://www.thestringstheory.in/assets/img/hero-stage-bw.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=19">
+<link rel="stylesheet" href="assets/css/style.css?v=22">
 </head>
 <body class="page-demo">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -31,7 +31,11 @@
 <header class="site-header">
   <nav class="container nav" aria-label="Main">
     <a class="nav__brand" href="index.html"><img src="assets/img/logo-white.png?v=2" alt="The Strings Theory, home" width="800" height="469"></a>
-    <ul class="nav__links">
+    <a class="nav__demo" href="book-demo.html" aria-current="page">Book a demo</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+      <span class="nav__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    <ul class="nav__links" id="nav-links">
               <li><a href="index.html">Home</a></li>
               <li><a href="about.html">About</a></li>
               <li><a href="fees.html">Fees</a></li>
@@ -47,18 +51,18 @@
   <div class="container page-head__inner">
     <p class="crumbs"><a href="index.html">Home</a> / Book a demo</p>
     <h1 class="h-xl">Book an online demo</h1>
-    <p class="lede">Pick a day and a time that suits you. Your Google Meet link is ready the moment you book, and Deepak will see you there.</p>
+    <p class="lede">Pick a day and a time that suits you and send your request on WhatsApp. Deepak will confirm the time and send you the Google Meet link.</p>
     <ol class="demo-steps">
       <li><b>01</b>Pick a slot</li>
       <li><b>02</b>Tell us about you</li>
-      <li><b>03</b>Copy your Meet link</li>
+      <li><b>03</b>Send it on WhatsApp</li>
     </ol>
   </div>
 </section>
 
 <section class="section section--tight-top">
   <div class="container">
-    <div class="booker" data-booker>
+    <div class="booker" data-booker data-whatsapp="917008896377">
 
       <!-- Shown when online booking isn't set up yet (booking-config.js is empty) -->
       <div class="booker__off" hidden>
@@ -114,7 +118,7 @@
           <label class="dark-field">WhatsApp number
             <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="10-digit mobile, or with country code" required>
           </label>
-          <label class="dark-field">Email <span>optional, for a calendar invite</span>
+          <label class="dark-field">Email <span>optional</span>
             <input type="email" name="email" autocomplete="email">
           </label>
           <label class="dark-field">Anything Deepak should know? <span>optional</span>
@@ -124,32 +128,30 @@
 
           <div class="booker__summary" aria-live="polite"></div>
           <p class="form-error" role="alert" hidden></p>
-          <button class="btn btn--gold btn--block" type="submit">Book my demo</button>
+          <button class="btn btn--gold btn--block btn--wa" type="submit"><img src="assets/img/whatsapp-gold.png" alt="" width="22" height="22"> Send request on WhatsApp</button>
+          <p class="booker__fine">Opens WhatsApp with your details filled in. Your demo is confirmed once Deepak replies.</p>
         </form>
       </div>
 
       <div class="booker__done" hidden tabindex="-1">
-        <p class="booker__kicker">You're booked</p>
-        <h2 class="booker__when" data-done-when></h2>
-        <p class="booker__what" data-done-what></p>
-
-        <div class="meet-box">
-          <p class="meet-box__label">Your Google Meet link</p>
-          <div class="meet-box__row">
-            <code class="meet-box__url" data-meet-url></code>
-            <button class="btn btn--gold" type="button" data-copy>Copy link</button>
-          </div>
-          <p class="meet-box__status" data-copy-status aria-live="polite"></p>
+        <p class="booker__kicker">Almost there</p>
+        <h2 class="booker__when">Send your request on WhatsApp</h2>
+        <div class="booker__req">
+          <p class="booker__req-label">Your request</p>
+          <p class="booker__req-when" data-done-when></p>
+          <p class="booker__req-what" data-done-what></p>
         </div>
-        <p class="booker__nomeet" data-no-meet hidden>Your demo is booked. Deepak will send you the Google Meet link on WhatsApp before the session.</p>
-
+        <ol class="booker__next">
+          <li><span>Tap <strong>send</strong> in WhatsApp. Your details are already filled in.</span></li>
+          <li><span>Deepak confirms the time.</span></li>
+          <li><span>He sends you the Google Meet link for your demo.</span></li>
+        </ol>
+        <p class="booker__blocked" data-blocked hidden>WhatsApp didn't open by itself. Use the button below.</p>
         <div class="actions booker__done-actions">
-          <a class="btn btn--outline" href="#" data-join target="_blank" rel="noopener">Join on Google Meet</a>
-          <a class="btn btn--outline" href="#" data-gcal target="_blank" rel="noopener">Add to Google Calendar</a>
-          <a class="btn btn--outline" href="#" data-wa-save target="_blank" rel="noopener">Send to my WhatsApp</a>
+          <a class="btn btn--gold btn--wa" href="#" data-wa-open target="_blank" rel="noopener"><img src="assets/img/whatsapp-gold.png" alt="" width="22" height="22"> Open WhatsApp</a>
+          <button class="btn btn--outline" type="button" data-again>Pick a different time</button>
         </div>
-        <p class="booker__note" data-invite-note></p>
-        <p class="booker__note">Need a different time? <a href="https://wa.me/917008896377?text=Hi%2C%20I%27d%20like%20to%20change%20my%20demo%20time." target="_blank" rel="noopener">WhatsApp us</a>. <button class="linklike" type="button" data-again>Book another demo</button></p>
+        <p class="booker__note">WhatsApp not on this device? Call or message Deepak on <a href="tel:+917008896377">070088 96377</a>.</p>
       </div>
     </div>
   </div>
@@ -240,8 +242,8 @@
 </dialog>
 
 <script src="assets/js/site.js?v=1" defer></script>
-<script src="assets/js/main.js?v=6" defer></script>
+<script src="assets/js/main.js?v=7" defer></script>
 <script src="assets/js/booking-config.js?v=2" defer></script>
-<script src="assets/js/booker.js?v=1" defer></script>
+<script src="assets/js/booker.js?v=2" defer></script>
 </body>
 </html>

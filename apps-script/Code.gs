@@ -7,7 +7,7 @@
  *                        calendar blocks that time).
  *  - GET  ?action=youtube  returns the YouTube channel's latest uploads and every public
  *                        playlist with its videos, for the website's Tutorials page.
- *  - POST {action:"book", ...}  books a slot: creates an event in his calendar with a
+ *  - POST {action:"book", ...}  (off unless CONFIG.DIRECT_BOOKING is true) books a slot: creates an event in his calendar with a
  *                        Google Meet link, invites the student if they gave an email,
  *                        and returns the Meet link to the website.
  *
@@ -35,6 +35,9 @@ var CONFIG = {
   SCHOOL_NAME: 'The Strings Theory',
   SCHOOL_WHATSAPP: '917008896377',
   INSTRUMENTS: ['Guitar', 'Ukulele'],
+  // The website sends demo requests to Deepak on WhatsApp, so booking straight into the
+  // calendar (with an automatic Meet link) is switched off. Set to true to turn it back on.
+  DIRECT_BOOKING: false,
   // Tutorials page
   YOUTUBE_CHANNEL_ID: 'UCOvTby3dG8NA0L4EDv21laQ',   // The Strings Theory (@stringstheory)
   YOUTUBE_CACHE_MINUTES: 60,       // new uploads and playlists show up on the site within this time
@@ -187,6 +190,7 @@ function normalisePhone_(raw) {
 }
 
 function book_(d) {
+  if (!CONFIG.DIRECT_BOOKING) return { ok: false, code: 'off', error: 'Online booking is off. Please send your request on WhatsApp.' };
   // Bots fill every field, people never see this one.
   if (clean_(d.website, 200)) return { ok: true, booking: null };
 

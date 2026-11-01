@@ -1,4 +1,24 @@
-/* Shared: phone contact button, scroll reveals, enquiry form that hands off to WhatsApp. */
+/* Shared: phone menu, phone contact button, scroll reveals, enquiry form that hands off to WhatsApp. */
+
+// Phone menu (burger button)
+(function () {
+  'use strict';
+  var nav = document.querySelector('.site-header .nav');
+  var btn = nav && nav.querySelector('.nav__toggle');
+  if (!btn) return;
+  function set(open) {
+    nav.classList.toggle('is-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  }
+  btn.addEventListener('click', function () { set(!nav.classList.contains('is-open')); });
+  nav.addEventListener('click', function (ev) { if (ev.target.closest('.nav__links a')) set(false); });
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && nav.classList.contains('is-open')) { set(false); btn.focus(); }
+  });
+  document.addEventListener('click', function (ev) { if (!nav.contains(ev.target)) set(false); });
+  window.addEventListener('resize', function () { if (window.innerWidth > 640) set(false); });
+})();
 
 // On phones the contact buttons fold into one; this opens and closes them.
 (function () {

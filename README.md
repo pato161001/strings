@@ -1,6 +1,6 @@
 # The Strings Theory — website
 
-Seven-page site for The Strings Theory, a guitar and ukulele school with studios in Basanti Nagar and Chhend Colony (Rourkela) and SBI Colony, Kesora (Bhubaneswar): Home, About, Fees (with Razorpay payments), Tutorials (every playlist from the YouTube channel), a syllabus page each for guitar and ukulele, and Book a demo (online demo booking with automatic Google Meet links). The pages are plain `.html` files. A few small PHP scripts in `api/` supply the fees and take payments; a Google Apps Script in Deepak's Google account handles demo booking and the YouTube playlists. No database and no build step; it runs on any Hostinger-style shared hosting with PHP 8, and the same files also work on GitHub Pages (without payments).
+Seven-page site for The Strings Theory, a guitar and ukulele school with studios in Basanti Nagar and Chhend Colony (Rourkela) and SBI Colony, Kesora (Bhubaneswar): Home, About, Fees (with Razorpay payments), Tutorials (every playlist from the YouTube channel), a syllabus page each for guitar and ukulele, and Book a demo (pick a free slot, then send the request to Deepak on WhatsApp). The pages are plain `.html` files. A few small PHP scripts in `api/` supply the fees and take payments; a Google Apps Script in Deepak's Google account handles demo booking and the YouTube playlists. No database and no build step; it runs on any Hostinger-style shared hosting with PHP 8, and the same files also work on GitHub Pages (without payments).
 
 ## Going live on Hostinger
 
@@ -36,7 +36,7 @@ Every order and verified payment is written to `storage/logs/payments.log` (stud
 
 ## Google Apps Script: demo booking and Tutorials playlists
 
-One small script in Deepak's Google account (`apps-script/`) does two jobs: online demo booking, and the YouTube playlists on the Tutorials page. Its web app link goes in `assets/js/booking-config.js`.
+One small script in Deepak's Google account (`apps-script/`) does two jobs: the free demo times from Deepak's calendar, and the YouTube playlists on the Tutorials page. Its web app link goes in `assets/js/booking-config.js`.
 
 ### Tutorials page
 
@@ -44,12 +44,11 @@ The page shows Deepak's channel ([@stringstheory](https://www.youtube.com/@strin
 
 ### Online demo booking (Book a demo page)
 
-Students pick a date and a time on `book-demo.html`, fill in their details and get a Google Meet link on the spot, with a Copy button. Behind it is a small Google Apps Script that runs in Deepak's own Google account:
+Students pick a date and a time on `book-demo.html` and fill in their details. Pressing **Send request on WhatsApp** opens WhatsApp with everything filled in (date and time in IST, instrument, level, name, number, email and notes), ready to send to Deepak on 070088 96377. Deepak confirms the time and sends the Google Meet link himself. The free times come from a small Google Apps Script that runs in Deepak's own Google account:
 
 - **Availability comes from his Google Calendar.** Demo hours are set in the script (Monday to Saturday, 10 AM to 1 PM and 4 PM to 8 PM, 30-minute demos, up to 14 days ahead, at least 3 hours' notice). Anything already in his calendar blocks that time, so to take a slot off, add an event to his calendar.
-- **Each booking becomes a calendar event** with a Google Meet link and the student's name, instrument, level, WhatsApp number and notes. Deepak also gets an email for every booking. If the student gives an email address, Google sends them a calendar invite too.
-- **No double bookings.** Two students can't take the same slot, and each WhatsApp number can only hold one upcoming demo.
-- **To cancel or move a demo,** delete or move the event in Google Calendar; the slot frees up straight away.
+- **Requests don't block the calendar by themselves.** When Deepak confirms a demo, he should add it to his Google Calendar (with a Meet link from Calendar's "Add Google Meet video conferencing") so that slot shows as booked to the next student.
+- **Automatic booking is still in the script but switched off** (`DIRECT_BOOKING: false` in `CONFIG`). With it on, the script would create the calendar event and Meet link itself; the website would also need changing back to use it.
 
 It works the same on GitHub Pages and Hostinger, and needs no server keys. Until it's set up, the page shows "Book your demo on WhatsApp" instead of the calendar.
 
@@ -68,6 +67,10 @@ To change the demo hours later, edit `CONFIG`, save, then **Deploy → Manage de
 **Updating to a new version of the script** (for example when the Tutorials playlists were added): paste the new `Code.gs` and `appsscript.json` over the old ones, save, run **setupCheck** once more and allow the new permission it asks for (read-only access to YouTube), then **Deploy → Manage deployments → ✏️ → Version: New version → Deploy**.
 
 Google Meet links from a personal Gmail account are free; one-to-one calls have no practical time limit, so 30-minute demos are fine.
+
+## Group classes
+
+The weekend group batch (Saturday and Sunday, 6 PM, 8 classes a month for ₹2,000) is written into the Home page Group classes section and the Group classes card on the Fees page; edit both if it changes. Online payment on the Fees page covers private classes only; the group card's button opens the enquiry form set to Group class.
 
 ## Still needed from Deepak
 
@@ -97,7 +100,7 @@ assets/js/main.js                               enquiry form → opens WhatsApp 
 assets/js/fees.js                               fee table, notes and Razorpay checkout, from api/site.php
 assets/js/tutorials.js                          Tutorials: player, jump menu and a row per YouTube playlist, from the Apps Script
 assets/js/gallery.js                            circular photo gallery in the Home page's Private classes section
-assets/js/booker.js                             Book a demo: calendar, time slots, form and the Meet link screen
+assets/js/booker.js                             Book a demo: calendar, time slots, form, then the WhatsApp request
 assets/js/booking-config.js                     the Google Apps Script link (one line), used by Book a demo and Tutorials
 apps-script/                                    the booking backend that runs in Deepak's Google account (see below)
 api/site.php                                    public settings from config.php (no keys)

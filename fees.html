@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=19">
+<link rel="stylesheet" href="assets/css/style.css?v=22">
 </head>
 <body class="page-fees">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -31,7 +31,11 @@
 <header class="site-header">
   <nav class="container nav" aria-label="Main">
     <a class="nav__brand" href="index.html"><img src="assets/img/logo-white.png?v=2" alt="The Strings Theory, home" width="800" height="469"></a>
-    <ul class="nav__links">
+    <a class="nav__demo" href="book-demo.html">Book a demo</a>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+      <span class="nav__bars" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    <ul class="nav__links" id="nav-links">
               <li><a href="index.html">Home</a></li>
               <li><a href="about.html">About</a></li>
               <li><a href="fees.html" aria-current="page">Fees</a></li>
@@ -46,7 +50,7 @@
 <section class="page-head">
   <div class="container page-head__inner">
     <h1 class="h-xl">Fees and enrollment</h1>
-    <p class="lede">Your monthly fee depends on your class time, weekdays or weekends, and whether you take 4 or 8 classes a month. Pay a few months ahead and save up to 15%.</p>
+    <p class="lede">Private class fees depend on your class time, weekdays or weekends, and whether you take 4 or 8 classes a month; pay a few months ahead and save up to 15%. Group classes run every Saturday and Sunday at 6 PM.</p>
   </div>
 </section>
 
@@ -55,7 +59,7 @@
   <div class="fees-main">
     <div class="price-board" data-reveal>
       <table id="fee-table">
-        <caption>Monthly fees <span class="price-board__year">Academic year 2026–27</span></caption>
+        <caption>Private classes <span class="price-board__year">Monthly fees · academic year 2026–27</span></caption>
         <thead>
           <tr><th scope="col">Class time (IST)</th><th scope="col">Weekdays</th><th scope="col">Weekends</th></tr>
         </thead>
@@ -80,11 +84,29 @@
 
     <div class="save-strip" data-reveal>
       <h2>Pay ahead and save</h2>
+      <p class="save-strip__sub">On private class fees</p>
       <ul>
         <li><strong>5%</strong> off for 3 months</li>
         <li><strong>10%</strong> off for 6 months</li>
         <li><strong>15%</strong> off for 12 months</li>
       </ul>
+    </div>
+
+    <div class="group-fee" data-reveal>
+      <div class="group-fee__info">
+        <p class="group-fee__kicker">Group classes</p>
+        <h2 class="group-fee__title">Weekend batch</h2>
+        <ul class="group-fee__facts">
+          <li>Saturday and Sunday</li>
+          <li>6 PM IST</li>
+          <li>8 classes a month</li>
+        </ul>
+      </div>
+      <div class="group-fee__price">
+        <p><strong>₹2,000</strong><span class="usd">US$21</span></p>
+        <p class="group-fee__per">for 8 classes</p>
+        <a class="btn btn--gold" href="https://wa.me/917008896377?text=Hi%2C%20I%27d%20like%20to%20join%20the%20weekend%20group%20batch%20at%20The%20Strings%20Theory." data-open-enquiry data-class="Group class">Join the group batch</a>
+      </div>
     </div>
 
     <div class="fee-notes">
@@ -122,7 +144,7 @@
     <!-- Online checkout: filled in by assets/js/fees.js from api/site.php -->
     <div class="checkout__form-wrap" hidden>
       <h2>Enroll and pay</h2>
-      <p class="checkout__sub">Secure payment in rupees by UPI, card, netbanking or wallet</p>
+      <p class="checkout__sub">Private classes · secure payment in rupees by UPI, card, netbanking or wallet</p>
 
       <form id="checkout" novalidate>
         <fieldset>
@@ -268,7 +290,7 @@
 </dialog>
 
 <script src="assets/js/site.js?v=1" defer></script>
-<script src="assets/js/main.js?v=6" defer></script>
+<script src="assets/js/main.js?v=7" defer></script>
 <script src="assets/js/fees.js?v=5" defer></script>
 </body>
 </html>
