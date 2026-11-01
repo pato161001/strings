@@ -63,6 +63,8 @@
     // Buttons like "Book a private class" pre-select the class type.
     var preset = ev.currentTarget.getAttribute('data-class');
     if (preset && form.elements['class']) form.elements['class'].value = preset;
+    var inst = ev.currentTarget.getAttribute('data-instrument');
+    if (inst && form.elements.instrument) form.elements.instrument.value = inst;
     form.hidden = false;
     done.hidden = true;
     errorBox.hidden = true;

@@ -12,7 +12,7 @@
   var caption = player.querySelector('figcaption');
   var titleEl = player.querySelector('[data-player-title]');
   var labelEl = player.querySelector('[data-player-label]');
-  var ORDER = ['Guitar', 'Piano', 'Singing', 'Ukulele', 'Theory', 'More'];
+  var ORDER = ['Guitar', 'Ukulele', 'Theory', 'More'];
   var PLAY_ICON = '<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg>';
 
   function el(tag, attrs, text) {

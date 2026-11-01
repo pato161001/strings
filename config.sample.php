@@ -15,7 +15,7 @@ return [
         'phone_tel'     => '+917008896377',
         'whatsapp'      => '917008896377',          // country code + number, digits only
         'email'         => '',                      // e.g. hello@thestringstheory.in — leave empty to hide the Email button
-        'address'       => 'Near Rajasthan Seva Sadan, Basanti Nagar, Rourkela, Odisha 769012',
+        'address'       => 'Basanti Nagar & Chhend Colony, Rourkela; SBI Colony, Kesora, Bhubaneswar',
         'hours'         => 'Opens 8 AM',            // TODO: confirm weekly hours with Deepak
         'instagram'     => 'https://www.instagram.com/the_stringstheory/',
         'maps_url'      => 'https://maps.google.com/?q=The+Strings+Theory+Basanti+Nagar+Rourkela',
@@ -27,7 +27,7 @@ return [
     // Set a price to null to show "Ask us" and turn off online payment for that option.
     'fees' => [
         'year' => '2026–27',
-        'instruments' => ['guitar' => 'Guitar', 'piano' => 'Piano', 'singing' => 'Singing', 'ukulele' => 'Ukulele'],
+        'instruments' => ['guitar' => 'Guitar', 'ukulele' => 'Ukulele'],
         'slots' => [
             'day' => [
                 'name' => '9 AM – 9 PM', 'short' => '9 AM–9 PM', 'icon' => 'sun',

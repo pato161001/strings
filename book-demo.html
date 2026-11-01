@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book an Online Demo | The Strings Theory</title>
+<meta name="description" content="Book an online guitar or ukulele demo session with Deepak of The Strings Theory. Pick a free slot in the calendar and get your Google Meet link straight away.">
+<link rel="canonical" href="https://www.thestringstheory.in/book-demo.html">
+<meta name="theme-color" content="#0A0A0A">
+<script>document.documentElement.classList.add('js');</script>
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Strings Theory">
+<meta property="og:title" content="Book an Online Demo | The Strings Theory">
+<meta property="og:description" content="Book an online guitar or ukulele demo session with Deepak of The Strings Theory. Pick a free slot in the calendar and get your Google Meet link straight away.">
+<meta property="og:url" content="https://www.thestringstheory.in/book-demo.html">
+<meta property="og:image" content="https://www.thestringstheory.in/assets/img/hero-stage-bw.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/img/favicon-32.png?v=2" sizes="32x32" type="image/png">
+<link rel="icon" href="assets/img/favicon-192.png?v=2" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@600;700&display=swap">
+<link rel="stylesheet" href="assets/css/style.css?v=17">
+</head>
+<body class="page-demo">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Main">
+    <a class="nav__brand" href="index.html"><img src="assets/img/logo-white.png?v=2" alt="The Strings Theory, home" width="800" height="469"></a>
+    <ul class="nav__links">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="about.html">About</a></li>
+              <li><a href="fees.html">Fees</a></li>
+              <li><a href="tutorials.html">Tutorials</a></li>
+              <li class="nav__cta-item"><a class="nav__cta" href="book-demo.html" aria-current="page">Book a demo</a></li>
+          </ul>
+  </nav>
+</header>
+
+<main id="main">
+
+<section class="page-head page-head--demo">
+  <div class="container page-head__inner">
+    <p class="crumbs"><a href="index.html">Home</a> / Book a demo</p>
+    <h1 class="h-xl">Book an online demo</h1>
+    <p class="lede">Pick a day and a time that suits you. Your Google Meet link is ready the moment you book, and Deepak will see you there.</p>
+    <ol class="demo-steps">
+      <li><b>01</b>Pick a slot</li>
+      <li><b>02</b>Tell us about you</li>
+      <li><b>03</b>Copy your Meet link</li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section--tight-top">
+  <div class="container">
+    <div class="booker" data-booker>
+
+      <!-- Shown when online booking isn't set up yet (booking-config.js is empty) -->
+      <div class="booker__off" hidden>
+        <h2 class="h-md">Book your demo on WhatsApp</h2>
+        <p class="lede">Online booking is being set up. Message us your instrument and a time that suits you, and we'll send your demo link.</p>
+        <div class="actions" style="margin-top: 24px">
+          <a class="btn btn--gold" href="https://wa.me/917008896377?text=Hi%2C%20I%27d%20like%20to%20book%20an%20online%20demo%20at%20The%20Strings%20Theory." target="_blank" rel="noopener">WhatsApp us</a>
+          <a class="btn btn--outline" href="tel:+917008896377">Call 070088 96377</a>
+        </div>
+      </div>
+
+      <div class="booker__grid">
+        <div class="booker__panel">
+          <h2 class="booker__step"><span>1</span>Pick a date</h2>
+          <div class="cal">
+            <div class="cal__head">
+              <button class="cal__nav" type="button" data-cal-prev aria-label="Previous month"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+              <p class="cal__month" aria-live="polite"></p>
+              <button class="cal__nav" type="button" data-cal-next aria-label="Next month"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
+            </div>
+            <div class="cal__dow" aria-hidden="true"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+            <div class="cal__days"></div>
+          </div>
+          <p class="booker__hint" aria-live="polite">Pick a date to see availability.</p>
+
+          <div class="booker__slotswrap" hidden>
+            <h2 class="booker__step"><span>2</span>Pick a time <small data-slot-meta></small></h2>
+            <div class="slots" aria-label="Demo times"></div>
+            <p class="slots__legend"><span class="lg lg--open">Open</span><span class="lg lg--taken">Booked</span></p>
+          </div>
+        </div>
+
+        <form class="booker__panel booker__form" id="demo-form" novalidate>
+          <h2 class="booker__step"><span>3</span>Your details</h2>
+          <fieldset>
+            <legend>Instrument</legend>
+            <div class="chips">
+              <label class="chip"><input type="radio" name="instrument" value="Guitar" checked><span>Guitar</span></label>
+              <label class="chip"><input type="radio" name="instrument" value="Ukulele"><span>Ukulele</span></label>
+            </div>
+          </fieldset>
+          <label class="dark-field">Level
+            <select name="level">
+              <option>Complete beginner</option>
+              <option>Know a few chords</option>
+              <option>Intermediate</option>
+              <option>Advanced</option>
+            </select>
+          </label>
+          <label class="dark-field">Student's name
+            <input type="text" name="name" autocomplete="name" required>
+          </label>
+          <label class="dark-field">WhatsApp number
+            <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="10-digit mobile, or with country code" required>
+          </label>
+          <label class="dark-field">Email <span>optional, for a calendar invite</span>
+            <input type="email" name="email" autocomplete="email">
+          </label>
+          <label class="dark-field">Anything Deepak should know? <span>optional</span>
+            <textarea name="notes" rows="3" placeholder="Songs you want to learn, your goals, the student's age"></textarea>
+          </label>
+          <label class="hp" aria-hidden="true">Website <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+
+          <div class="booker__summary" aria-live="polite"></div>
+          <p class="form-error" role="alert" hidden></p>
+          <button class="btn btn--gold btn--block" type="submit">Book my demo</button>
+        </form>
+      </div>
+
+      <div class="booker__done" hidden tabindex="-1">
+        <p class="booker__kicker">You're booked</p>
+        <h2 class="booker__when" data-done-when></h2>
+        <p class="booker__what" data-done-what></p>
+
+        <div class="meet-box">
+          <p class="meet-box__label">Your Google Meet link</p>
+          <div class="meet-box__row">
+            <code class="meet-box__url" data-meet-url></code>
+            <button class="btn btn--gold" type="button" data-copy>Copy link</button>
+          </div>
+          <p class="meet-box__status" data-copy-status aria-live="polite"></p>
+        </div>
+        <p class="booker__nomeet" data-no-meet hidden>Your demo is booked. Deepak will send you the Google Meet link on WhatsApp before the session.</p>
+
+        <div class="actions booker__done-actions">
+          <a class="btn btn--outline" href="#" data-join target="_blank" rel="noopener">Join on Google Meet</a>
+          <a class="btn btn--outline" href="#" data-gcal target="_blank" rel="noopener">Add to Google Calendar</a>
+          <a class="btn btn--outline" href="#" data-wa-save target="_blank" rel="noopener">Send to my WhatsApp</a>
+        </div>
+        <p class="booker__note" data-invite-note></p>
+        <p class="booker__note">Need a different time? <a href="https://wa.me/917008896377?text=Hi%2C%20I%27d%20like%20to%20change%20my%20demo%20time." target="_blank" rel="noopener">WhatsApp us</a>. <button class="linklike" type="button" data-again>Book another demo</button></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <img class="site-footer__brand" src="assets/img/logo-white.png?v=2" alt="The Strings Theory" width="800" height="469" loading="lazy">
+    <span>Basanti Nagar &amp; Chhend Colony, Rourkela · SBI Colony, Kesora, Bhubaneswar</span>
+    <a href="https://www.instagram.com/the_stringstheory/" rel="noopener">Instagram</a>
+  </div>
+</footer>
+
+<!-- Floating contact buttons -->
+<nav class="fab-stack" id="fab-stack" aria-label="Contact us">
+  <button class="fab fab-toggle" type="button" aria-expanded="false" aria-controls="fab-stack" aria-label="Contact options">
+    <svg class="icon-open" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></svg>
+    <svg class="icon-close" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+  </button>
+  <a class="fab fab--call" href="tel:+917008896377" aria-label="Call 070088 96377" title="Call 070088 96377">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>
+  </a>
+  <a class="fab" href="https://wa.me/917008896377?text=Hi%2C%20I%27d%20like%20to%20know%20about%20lessons%20at%20The%20Strings%20Theory." target="_blank" rel="noopener" aria-label="Message us on WhatsApp" title="WhatsApp us">
+    <img src="assets/img/whatsapp-gold.png" alt="" width="26" height="26">
+  </a>
+  <a class="fab" href="#" data-site-email hidden aria-label="Email us" title="Email us">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><polyline points="3 7 12 13 21 7"/></svg>
+  </a>
+    <a class="fab" href="https://wa.me/917008896377?text=Hi%2C%20I%27d%20like%20to%20know%20about%20lessons%20at%20The%20Strings%20Theory." data-open-enquiry aria-haspopup="dialog" aria-label="Send an enquiry" title="Send an enquiry">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+  </a>
+</nav>
+
+<!-- Enquiry form: composes a WhatsApp message to the school -->
+<dialog class="enquiry" id="enquiry" aria-labelledby="enquiry-title">
+  <button class="enquiry__close" type="button" data-close-enquiry aria-label="Close">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+  </button>
+
+  <form class="enquiry__form" id="enquiry-form" novalidate data-whatsapp="917008896377">
+    <h2 id="enquiry-title" class="enquiry__title">Book a first lesson</h2>
+    <p class="enquiry__lede">Fill this in and we'll open WhatsApp with your message ready to send to Deepak.</p>
+
+    <label class="field">Your name
+      <input type="text" name="name" autocomplete="name" required>
+    </label>
+    <label class="field">WhatsApp number
+      <input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="10-digit mobile number" required>
+    </label>
+    <label class="field">Class
+      <select name="class">
+        <option>Private class</option>
+        <option>Group class</option>
+        <option>Not sure yet</option>
+      </select>
+    </label>
+    <div class="field-row">
+      <label class="field">Instrument
+        <select name="instrument">
+          <option>Guitar</option>
+          <option>Ukulele</option>
+          <option>Not sure yet</option>
+        </select>
+      </label>
+      <label class="field">Where
+        <select name="mode">
+          <option>Basanti Nagar, Rourkela</option>
+          <option>Chhend Colony, Rourkela</option>
+          <option>SBI Colony, Bhubaneswar</option>
+          <option>Online</option>
+        </select>
+      </label>
+    </div>
+    <label class="field">Anything we should know? <span class="field__hint">Optional</span>
+      <textarea name="message" rows="3" placeholder="Your level, the songs you want to learn, the best time to call"></textarea>
+    </label>
+    <p class="form-error" role="alert" hidden></p>
+    <button class="btn btn--ink btn--block" type="submit">Send on WhatsApp</button>
+  </form>
+
+  <div class="enquiry__done" hidden>
+    <h2 class="enquiry__title">WhatsApp is open</h2>
+    <p class="enquiry__lede">Your message is ready in WhatsApp. Tap send there and Deepak will get back to you. If it's urgent, call 070088 96377.</p>
+    <button class="btn btn--ink" type="button" data-close-enquiry>Done</button>
+  </div>
+</dialog>
+
+<script src="assets/js/site.js?v=1" defer></script>
+<script src="assets/js/main.js?v=6" defer></script>
+<script src="assets/js/booking-config.js?v=1" defer></script>
+<script src="assets/js/booker.js?v=1" defer></script>
+</body>
+</html>

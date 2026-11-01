@@ -14,7 +14,12 @@ function fee_instruments(): array
 
 function fee_modes(): array
 {
-    return ['offline' => 'In class', 'online' => 'Online'];
+    return [
+        'basanti' => 'Basanti Nagar, Rourkela',
+        'chhend'  => 'Chhend Colony, Rourkela',
+        'kesora'  => 'SBI Colony, Bhubaneswar',
+        'online'  => 'Online',
+    ];
 }
 
 function fee_days(): array
@@ -83,7 +88,7 @@ function fee_quote(array $in): array
         return ['ok' => false, 'error' => 'Please choose an instrument.'];
     }
     if (!isset(fee_modes()[$mode])) {
-        return ['ok' => false, 'error' => 'Please choose in class or online.'];
+        return ['ok' => false, 'error' => 'Please choose a studio or online.'];
     }
     if (!isset(fee_slots()[$slot])) {
         return ['ok' => false, 'error' => 'Please choose a class time.'];
@@ -105,7 +110,7 @@ function fee_quote(array $in): array
 
     $subtotal = $monthly * $months;
     $discount = round($subtotal * $discounts[$months] / 100);
-    $label = fee_instruments()[$instrument] . ', ' . strtolower(fee_modes()[$mode]) . ', '
+    $label = fee_instruments()[$instrument] . ', ' . fee_modes()[$mode] . ', '
            . strtolower(fee_days()[$days]) . ' ' . (fee_slots()[$slot]['short'] ?? fee_slots()[$slot]['name']) . ' IST, '
            . $classes . ' classes a month, ' . months_label($months);
 

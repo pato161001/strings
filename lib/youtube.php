@@ -47,8 +47,6 @@ function youtube_classify(string $title, string $description): array
     $d = mb_strtolower(mb_substr($description, 0, 400));
     $rules = [
         'Ukulele' => '/\b(ukulele|uke)\b/u',
-        'Piano'   => '/\b(piano|keyboard|keys)\b/u',
-        'Singing' => '/\b(sing|singing|vocals?|voice)\b/u',
         'Guitar'  => '/\b(guitar|chords?|strum\w*|riffs?|solo|fingerstyle|barre|fretboard|pentatonic|tabs?)\b/u',
         'Theory'  => '/\b(theory|scales?|ear training|intervals?|notation|rhythm)\b/u',
     ];

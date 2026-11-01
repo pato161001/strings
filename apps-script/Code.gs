@@ -1,0 +1,327 @@
+/**
+ * The Strings Theory: online demo booking.
+ *
+ * A Google Apps Script web app that runs as Deepak's Google account.
+ *  - GET  ?action=slots  returns the open and booked demo slots for the next few days,
+ *                        worked out from his Google Calendar (anything already in his
+ *                        calendar blocks that time).
+ *  - POST {action:"book", ...}  books a slot: creates an event in his calendar with a
+ *                        Google Meet link, invites the student if they gave an email,
+ *                        and returns the Meet link to the website.
+ *
+ * Setup steps are in the README ("Online demo booking"). Only the CONFIG block below
+ * normally needs changing.
+ */
+
+var CONFIG = {
+  CALENDAR_ID: 'primary',          // Deepak's main calendar. Bookings go here and his events block slots.
+  TIMEZONE: 'Asia/Kolkata',
+  DEMO_MINUTES: 30,                // length of a demo session
+  DAYS_AHEAD: 14,                  // how far ahead students can book
+  MIN_NOTICE_HOURS: 3,             // no bookings sooner than this
+  // Demo hours for each day, as 'HH:MM-HH:MM' blocks in IST. An empty list means no demos that day.
+  HOURS: {
+    mon: ['10:00-13:00', '16:00-20:00'],
+    tue: ['10:00-13:00', '16:00-20:00'],
+    wed: ['10:00-13:00', '16:00-20:00'],
+    thu: ['10:00-13:00', '16:00-20:00'],
+    fri: ['10:00-13:00', '16:00-20:00'],
+    sat: ['10:00-13:00', '16:00-20:00'],
+    sun: []
+  },
+  NOTIFY_EMAIL: '',                // who gets a "new demo booked" email. Empty = the account running the script.
+  SCHOOL_NAME: 'The Strings Theory',
+  SCHOOL_WHATSAPP: '917008896377',
+  INSTRUMENTS: ['Guitar', 'Ukulele']
+};
+
+var DAY_KEYS = ['', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']; // Utilities 'u': 1 = Monday
+
+/* ---------- web app entry points ---------- */
+
+function doGet(e) {
+  var action = (e && e.parameter && e.parameter.action) || 'slots';
+  try {
+    if (action === 'slots') return json_(getSlots_());
+    if (action === 'ping') return json_({ ok: true });
+    return json_({ ok: false, error: 'Unknown request.' });
+  } catch (err) {
+    console.error(err);
+    return json_({ ok: false, error: 'Could not load the available times. Please try again.' });
+  }
+}
+
+function doPost(e) {
+  var data;
+  try {
+    data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+  } catch (err) {
+    return json_({ ok: false, error: 'Something went wrong. Please try again.' });
+  }
+  try {
+    if (data.action === 'book') return json_(book_(data));
+    return json_({ ok: false, error: 'Unknown request.' });
+  } catch (err) {
+    console.error(err);
+    return json_({ ok: false, error: 'We could not book that slot. Please try again, or WhatsApp us.' });
+  }
+}
+
+function json_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+/* ---------- time helpers (all in CONFIG.TIMEZONE) ---------- */
+
+function fmt_(date, pattern) {
+  return Utilities.formatDate(date, CONFIG.TIMEZONE, pattern);
+}
+
+/** Local date 'yyyy-MM-dd' + 'HH:mm' -> Date, using the zone's offset on that day. */
+function localToDate_(day, hm) {
+  var noon = new Date(day + 'T12:00:00Z');
+  var offset = fmt_(noon, 'XXX');                      // e.g. +05:30
+  if (offset === 'Z') offset = '+00:00';
+  return new Date(day + 'T' + hm + ':00' + offset);
+}
+
+/** The next DAYS_AHEAD local dates starting today, as 'yyyy-MM-dd'. */
+function upcomingDays_(now) {
+  var days = [];
+  var base = new Date(fmt_(now, 'yyyy-MM-dd') + 'T12:00:00Z');
+  for (var i = 0; i < CONFIG.DAYS_AHEAD; i++) {
+    days.push(Utilities.formatDate(new Date(base.getTime() + i * 86400000), 'UTC', 'yyyy-MM-dd'));
+  }
+  return days;
+}
+
+/** Every slot start in the booking window, grouped by day (before checking the calendar). */
+function slotGrid_(now) {
+  var grid = {};
+  var step = CONFIG.DEMO_MINUTES * 60000;
+  upcomingDays_(now).forEach(function (day) {
+    var key = DAY_KEYS[Number(fmt_(localToDate_(day, '12:00'), 'u'))];
+    var blocks = CONFIG.HOURS[key] || [];
+    var starts = [];
+    blocks.forEach(function (block) {
+      var parts = block.split('-');
+      var from = localToDate_(day, parts[0]).getTime();
+      var to = localToDate_(day, parts[1]).getTime();
+      for (var t = from; t + step <= to; t += step) starts.push(new Date(t));
+    });
+    grid[day] = starts;
+  });
+  return grid;
+}
+
+function busyBetween_(from, to) {
+  var res = Calendar.Freebusy.query({
+    timeMin: from.toISOString(),
+    timeMax: to.toISOString(),
+    timeZone: CONFIG.TIMEZONE,
+    items: [{ id: CONFIG.CALENDAR_ID }]
+  });
+  var cals = res.calendars || {};
+  var cal = cals[CONFIG.CALENDAR_ID] || cals[Object.keys(cals)[0]] || {};
+  return (cal.busy || []).map(function (b) {
+    return { start: new Date(b.start).getTime(), end: new Date(b.end).getTime() };
+  });
+}
+
+function overlaps_(start, end, busy) {
+  for (var i = 0; i < busy.length; i++) {
+    if (start < busy[i].end && end > busy[i].start) return true;
+  }
+  return false;
+}
+
+/* ---------- slots ---------- */
+
+function getSlots_() {
+  var now = new Date();
+  var grid = slotGrid_(now);
+  var days = Object.keys(grid);
+  var first = localToDate_(days[0], '00:00');
+  var last = new Date(localToDate_(days[days.length - 1], '00:00').getTime() + 86400000);
+  var busy = busyBetween_(first, last);
+  var earliest = now.getTime() + CONFIG.MIN_NOTICE_HOURS * 3600000;
+  var len = CONFIG.DEMO_MINUTES * 60000;
+
+  var out = {};
+  days.forEach(function (day) {
+    out[day] = grid[day].map(function (start) {
+      var s = start.getTime();
+      var slot = { t: start.toISOString(), label: fmt_(start, 'h:mm a'), open: true };
+      if (s < earliest) { slot.open = false; slot.reason = 'soon'; }
+      else if (overlaps_(s, s + len, busy)) { slot.open = false; slot.reason = 'booked'; }
+      return slot;
+    });
+  });
+  return {
+    ok: true,
+    tz: CONFIG.TIMEZONE,
+    minutes: CONFIG.DEMO_MINUTES,
+    instruments: CONFIG.INSTRUMENTS,
+    days: out
+  };
+}
+
+/* ---------- booking ---------- */
+
+function clean_(v, max) {
+  return String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max);
+}
+
+function normalisePhone_(raw) {
+  var digits = String(raw || '').replace(/\D/g, '');
+  if (digits.length === 11 && digits.charAt(0) === '0') digits = digits.slice(1);
+  if (digits.length === 10) digits = '91' + digits;      // Indian mobile without country code
+  return digits.length >= 11 && digits.length <= 15 ? digits : '';
+}
+
+function book_(d) {
+  // Bots fill every field, people never see this one.
+  if (clean_(d.website, 200)) return { ok: true, booking: null };
+
+  var name = clean_(d.name, 80);
+  var phone = normalisePhone_(d.phone);
+  var email = clean_(d.email, 120).toLowerCase();
+  var instrument = clean_(d.instrument, 30);
+  var level = clean_(d.level, 40);
+  var notes = clean_(d.notes, 500);
+
+  if (!name) return { ok: false, field: 'name', error: "Please enter the student's name." };
+  if (!phone) return { ok: false, field: 'phone', error: 'Please enter a WhatsApp number with country code if outside India.' };
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { ok: false, field: 'email', error: "That email address doesn't look right." };
+  if (CONFIG.INSTRUMENTS.indexOf(instrument) === -1) return { ok: false, field: 'instrument', error: 'Please choose an instrument.' };
+
+  var start = new Date(String(d.start || ''));
+  if (isNaN(start.getTime())) return { ok: false, code: 'invalid', error: 'Please pick a time slot.' };
+  var end = new Date(start.getTime() + CONFIG.DEMO_MINUTES * 60000);
+  var now = new Date();
+
+  // The slot has to be one we actually offer.
+  var offered = false;
+  var grid = slotGrid_(now);
+  Object.keys(grid).forEach(function (day) {
+    grid[day].forEach(function (s) { if (s.getTime() === start.getTime()) offered = true; });
+  });
+  if (!offered || start.getTime() < now.getTime() + CONFIG.MIN_NOTICE_HOURS * 3600000) {
+    return { ok: false, code: 'invalid', error: 'That time is no longer available. Please pick another slot.' };
+  }
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    // One upcoming demo per WhatsApp number.
+    var existing = Calendar.Events.list(CONFIG.CALENDAR_ID, {
+      privateExtendedProperty: 'tstDemoPhone=' + phone,
+      timeMin: now.toISOString(),
+      singleEvents: true,
+      maxResults: 5
+    });
+    var already = (existing.items || []).filter(function (ev) { return ev.status !== 'cancelled'; })[0];
+    if (already) {
+      var when = fmt_(new Date(already.start.dateTime || already.start.date), "EEE d MMM 'at' h:mm a");
+      return { ok: false, code: 'duplicate', error: 'This number already has a demo booked for ' + when + '. WhatsApp us if you need to change it.' };
+    }
+
+    // Check the slot again now that we hold the lock.
+    if (overlaps_(start.getTime(), end.getTime(), busyBetween_(start, end))) {
+      return { ok: false, code: 'taken', error: 'Sorry, someone just booked that slot. Please pick another time.' };
+    }
+
+    var description = [
+      'Online demo session booked on the website.',
+      '',
+      'Student: ' + name,
+      'Instrument: ' + instrument,
+      level ? 'Level: ' + level : '',
+      'WhatsApp: +' + phone + '  (https://wa.me/' + phone + ')',
+      email ? 'Email: ' + email : '',
+      notes ? '\nNotes: ' + notes : ''
+    ].filter(function (l) { return l !== ''; }).join('\n');
+
+    var event = {
+      summary: instrument + ' demo: ' + name + ' | ' + CONFIG.SCHOOL_NAME,
+      description: description,
+      start: { dateTime: start.toISOString(), timeZone: CONFIG.TIMEZONE },
+      end: { dateTime: end.toISOString(), timeZone: CONFIG.TIMEZONE },
+      attendees: email ? [{ email: email, displayName: name }] : [],
+      conferenceData: {
+        createRequest: { requestId: Utilities.getUuid(), conferenceSolutionKey: { type: 'hangoutsMeet' } }
+      },
+      extendedProperties: { private: { tstDemo: '1', tstDemoPhone: phone } },
+      reminders: { useDefault: true }
+    };
+    var created = Calendar.Events.insert(event, CONFIG.CALENDAR_ID, {
+      conferenceDataVersion: 1,
+      sendUpdates: email ? 'all' : 'none'
+    });
+
+    var meetUrl = meetLink_(created);
+    for (var tries = 0; !meetUrl && tries < 4; tries++) {   // Meet can take a moment to attach
+      Utilities.sleep(800);
+      created = Calendar.Events.get(CONFIG.CALENDAR_ID, created.id);
+      meetUrl = meetLink_(created);
+    }
+
+    var label = fmt_(start, "EEEE d MMMM 'at' h:mm a") + ' IST';
+    notifyOwner_(name, instrument, level, phone, email, notes, label, meetUrl);
+
+    return {
+      ok: true,
+      booking: {
+        id: created.id,
+        start: start.toISOString(),
+        end: end.toISOString(),
+        label: label,
+        minutes: CONFIG.DEMO_MINUTES,
+        meetUrl: meetUrl || '',
+        invited: !!email
+      }
+    };
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function meetLink_(ev) {
+  if (!ev) return '';
+  if (ev.hangoutLink) return ev.hangoutLink;
+  var points = (ev.conferenceData && ev.conferenceData.entryPoints) || [];
+  for (var i = 0; i < points.length; i++) {
+    if (points[i].entryPointType === 'video') return points[i].uri;
+  }
+  return '';
+}
+
+function notifyOwner_(name, instrument, level, phone, email, notes, label, meetUrl) {
+  var to = CONFIG.NOTIFY_EMAIL || Session.getEffectiveUser().getEmail();
+  if (!to) return;
+  var body = [
+    'A new online demo was booked on the website.',
+    '',
+    'When: ' + label,
+    'Student: ' + name,
+    'Instrument: ' + instrument + (level ? ' (' + level + ')' : ''),
+    'WhatsApp: https://wa.me/' + phone,
+    email ? 'Email: ' + email : 'Email: not given',
+    notes ? 'Notes: ' + notes : '',
+    '',
+    'Google Meet: ' + (meetUrl || 'see the event in your calendar')
+  ].filter(function (l, i, a) { return l !== '' || (a[i - 1] !== ''); }).join('\n');
+  try {
+    MailApp.sendEmail(to, 'New demo booked: ' + name + ', ' + label, body);
+  } catch (err) {
+    console.error('notify failed', err);   // the booking still stands
+  }
+}
+
+/** Run this once from the editor to grant permissions and check everything works. */
+function setupCheck() {
+  var slots = getSlots_();
+  var open = 0;
+  Object.keys(slots.days).forEach(function (d) { slots.days[d].forEach(function (s) { if (s.open) open++; }); });
+  console.log('Calendar connected. Open demo slots in the next ' + CONFIG.DAYS_AHEAD + ' days: ' + open);
+}

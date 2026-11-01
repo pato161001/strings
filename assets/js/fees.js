@@ -117,7 +117,7 @@
       q.subtotal = q.monthly === null ? null : q.monthly * q.months;
       q.discount = q.subtotal === null ? 0 : Math.round(q.subtotal * q.pct / 100);
       q.total = q.subtotal === null ? null : q.subtotal - q.discount;
-      q.label = fees.instruments[q.instrument] + ', ' + (fees.modes[q.mode] || '').toLowerCase() + ', ' +
+      q.label = fees.instruments[q.instrument] + ', ' + (fees.modes[q.mode] || '') + ', ' +
         (fees.days[q.days] || '').toLowerCase() + ' ' + (s.short || s.name || '') + ' IST, ' +
         q.classes + ' classes a month, ' + monthsLabel(q.months);
       return q;
