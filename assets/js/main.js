@@ -20,6 +20,39 @@
   window.addEventListener('resize', function () { if (window.innerWidth > 640) set(false); });
 })();
 
+// Home hero: loop the row of posters. The set is copied once (hidden from screen readers
+// and keyboard) and the track slides left by exactly one set, so the loop has no seam.
+(function () {
+  'use strict';
+  var wall = document.querySelector('[data-hposters]');
+  if (!wall) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var track = wall.querySelector('.hposters__track');
+  var originals = Array.prototype.slice.call(track.children);
+  originals.forEach(function (node) {
+    var copy = node.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    copy.querySelectorAll('[id]').forEach(function (e) { e.removeAttribute('id'); });
+    if (copy.tagName === 'A') copy.setAttribute('tabindex', '-1');
+    copy.querySelectorAll('a, button').forEach(function (e) { e.setAttribute('tabindex', '-1'); });
+    copy.querySelectorAll('h1').forEach(function (h) {
+      var d = document.createElement('div');
+      d.className = h.className;
+      d.innerHTML = h.innerHTML;
+      h.parentNode.replaceChild(d, h);
+    });
+    copy.querySelectorAll('img').forEach(function (img) { img.loading = 'eager'; });
+    track.appendChild(copy);
+  });
+  function speed() {
+    var setWidth = track.scrollWidth / 2;
+    wall.style.setProperty('--hp-dur', Math.max(30, Math.round(setWidth / 42)) + 's'); // about 42px a second
+  }
+  wall.classList.add('is-moving');
+  speed();
+  window.addEventListener('resize', speed);
+})();
+
 // On phones the contact buttons fold into one; this opens and closes them.
 (function () {
   'use strict';

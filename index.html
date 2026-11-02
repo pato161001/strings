@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=22">
+<link rel="stylesheet" href="assets/css/style.css?v=24">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"MusicSchool","name":"The Strings Theory","url":"https://www.thestringstheory.in","telephone":"+917008896377","image":"https://www.thestringstheory.in/assets/img/hero-stage-bw.jpg","address":[{"@type":"PostalAddress","streetAddress":"Near Rajasthan Seva Sadan, Basanti Nagar","addressLocality":"Rourkela","addressRegion":"Odisha","postalCode":"769012","addressCountry":"IN"},{"@type":"PostalAddress","streetAddress":"Chhend Colony","addressLocality":"Rourkela","addressRegion":"Odisha","addressCountry":"IN"},{"@type":"PostalAddress","streetAddress":"SBI Colony, Kesora","addressLocality":"Bhubaneswar","addressRegion":"Odisha","addressCountry":"IN"}],"sameAs":["https://www.instagram.com/the_stringstheory/"]}</script></head>
 <body class="page-home">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -47,20 +47,95 @@
 
 <main id="main">
 
-<!-- Poster hero -->
+<!-- Poster hero: a moving wall of gig posters (assets/js/main.js loops it) -->
 <section class="hero">
-  <div class="poster" data-reveal>
-    <p class="poster__presents">The Strings Theory proudly presents</p>
-    <h1 class="poster__bill" aria-label="Guitar and ukulele lessons in Rourkela and Bhubaneswar">
-      <span class="poster__headliner" aria-hidden="true">GUITAR</span>
-      <span class="poster__guest-label" aria-hidden="true">with special guest</span>
-      <span class="poster__guest" aria-hidden="true">UKULELE</span>
-    </h1>
-    <div class="poster__meta">
-      <span>Lessons every day from 8 AM</span>
-      <span>Rourkela, Bhubaneswar and online</span>
+  <div class="hposters" data-hposters>
+    <div class="hposters__track">
+      <div class="hposter hposter--yellow">
+        <div class="hp-in">
+          <p class="hp-small">The Strings Theory proudly presents</p>
+          <h1 class="hp-bill" aria-label="Guitar and ukulele lessons in Rourkela and Bhubaneswar">
+            <span class="hp-big" aria-hidden="true">Guitar</span>
+            <span class="hp-kicker" aria-hidden="true">with special guest</span>
+            <span class="hp-mid" aria-hidden="true">Ukulele</span>
+          </h1>
+          <p class="hp-meta">Lessons every day from 8 AM<br>Rourkela, Bhubaneswar and online</p>
+          <p class="hp-foot"><span class="stars" role="img" aria-label="Rated 4.9 out of 5">★★★★★</span> Rated 4.9 on Google</p>
+        </div>
+      </div>
+
+      <a class="hposter hposter--photo" href="about.html">
+        <img class="hp-bg" src="assets/img/live-3.jpg" alt="" loading="lazy">
+        <div class="hp-in">
+          <p class="hp-kicker">Meet your teacher</p>
+          <p class="hp-mid">Deepak<br>Gochhayat</p>
+          <p class="hp-small">Musician, music educator and founder</p>
+          <span class="hp-cta hp-cta--yellow">Read his story</span>
+        </div>
+      </a>
+
+      <a class="hposter hposter--black" href="fees.html">
+        <div class="hp-in">
+          <p class="hp-kicker">Now enrolling</p>
+          <p class="hp-big hp-big--sm hp-yellow">Private</p>
+          <p class="hp-mid">Classes</p>
+          <p class="hp-meta">One teacher, one student<br>In class or online</p>
+          <span class="hp-cta hp-cta--yellow">See fees</span>
+        </div>
+      </a>
+
+      <a class="hposter hposter--white" href="fees.html">
+        <div class="hp-in">
+          <span class="hp-stamp" aria-hidden="true"><b>₹2,000</b>8 classes</span>
+          <p class="hp-kicker">Every weekend</p>
+          <p class="hp-mid">Group batch</p>
+          <p class="hp-big">6 PM</p>
+          <p class="hp-meta">Saturday and Sunday<br>8 classes for ₹2,000</p>
+          <span class="hp-cta">Join a batch</span>
+        </div>
+      </a>
+
+      <a class="hposter hposter--yellow" href="book-demo.html">
+        <div class="hp-in">
+          <p class="hp-small">Not sure where to start?</p>
+          <p class="hp-mid">Book an</p>
+          <p class="hp-big">Online</p>
+          <p class="hp-mid">demo</p>
+          <p class="hp-meta">Pick a slot that suits you<br>Meet Deepak on Google Meet</p>
+          <span class="hp-cta">Book a slot</span>
+        </div>
+      </a>
+
+      <a class="hposter hposter--photo" href="index.html#visit">
+        <img class="hp-bg" src="assets/img/group-1.jpg" alt="" loading="lazy">
+        <div class="hp-in">
+          <p class="hp-kicker">Come and play</p>
+          <p class="hp-mid">Three<br>studios</p>
+          <p class="hp-meta">Basanti Nagar and Chhend Colony, Rourkela<br>SBI Colony, Kesora, Bhubaneswar</p>
+          <span class="hp-cta hp-cta--yellow">Find us</span>
+        </div>
+      </a>
+
+      <div class="hposter hposter--black">
+        <div class="hp-in">
+          <p class="hp-kicker">Students say</p>
+          <p class="hp-big hp-yellow">4.9</p>
+          <p class="hp-stars" aria-hidden="true">★★★★★</p>
+          <p class="hp-small">Rated by 13 students on Google</p>
+          <p class="hp-meta">ROCKSCHOOL and Trinity<br>grade exam preparation</p>
+        </div>
+      </div>
+
+      <a class="hposter hposter--white" href="tutorials.html">
+        <div class="hp-in">
+          <p class="hp-kicker">Free on YouTube</p>
+          <p class="hp-mid">Tutorials</p>
+          <span class="hp-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="8 5 19 12 8 19 8 5"/></svg></span>
+          <p class="hp-small">Guitar and ukulele lessons, sorted into playlists</p>
+          <span class="hp-cta">Watch now</span>
+        </div>
+      </a>
     </div>
-    <p class="poster__rating"><span class="stars" role="img" aria-label="Rated 4.9 out of 5">★★★★★</span> Rated 4.9 by 13 students on Google</p>
   </div>
   <div class="actions hero__actions">
     <a class="btn btn--gold" href="book-demo.html">Book an online demo</a>
@@ -401,7 +476,7 @@
 </dialog>
 
 <script src="assets/js/site.js?v=1" defer></script>
-<script src="assets/js/main.js?v=7" defer></script>
+<script src="assets/js/main.js?v=8" defer></script>
 <script src="assets/js/gallery.js?v=1" defer></script>
 </body>
 </html>
