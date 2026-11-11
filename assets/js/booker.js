@@ -1,7 +1,8 @@
 /* Book a demo: month calendar, time slots (booked ones shown struck through) and
-   student details. Free times come from Deepak's Google Calendar through the Google
-   Apps Script set in booking-config.js. Submitting opens WhatsApp with the request
-   ready to send to Deepak, who confirms and sends the Google Meet link. */
+   student details. Talks to the Google Apps Script set in booking-config.js, which
+   books the slot in Deepak's Google Calendar and creates a Google Meet link.
+   The student gets the link to copy, and WhatsApp opens with the booking details
+   ready to send to Deepak, so he can reschedule if needed. */
 (function () {
   'use strict';
 
@@ -236,10 +237,47 @@
 
   form.addEventListener('input', clearError);
   var schoolWa = (root.getAttribute('data-whatsapp') || '917008896377').replace(/\D/g, '');
-  var lastWaUrl = '';
+  var submit = form.querySelector('[type="submit"]');
+  var submitLabel = submit.innerHTML;
+  var busy = false, lastWaUrl = '';
+
+  function waLink(lines) { return 'https://wa.me/' + schoolWa + '?text=' + encodeURIComponent(lines.join('\n')); }
+  function details(p) {
+    var out = [
+      'Date and time: ' + p.when + p.mine,
+      'Instrument: ' + p.instrument,
+      'Level: ' + p.level,
+      "Student's name: " + p.name,
+      'WhatsApp: ' + p.phone
+    ];
+    if (p.email) out.push('Email: ' + p.email);
+    if (p.notes) out.push('Notes: ' + p.notes);
+    return out;
+  }
+
+  // WhatsApp opens in a new tab. Browsers only allow that straight after a click, so the tab
+  // is opened at once with a "booking…" note and pointed at WhatsApp when the booking is done.
+  function openHolder() {
+    var w = null;
+    try { w = window.open('', '_blank'); } catch (e) { w = null; }
+    if (w) {
+      try {
+        w.document.write('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>Booking your demo…</title>' +
+          '<body style="margin:0;min-height:100vh;display:grid;place-items:center;background:#0A0A0A;color:#FAFAFA;font:600 18px system-ui,sans-serif;text-align:center">' +
+          '<p>Booking your demo…<br><span style="color:#FCDF00">WhatsApp will open in a moment.</span></p></body>');
+        w.document.close();
+      } catch (e) { /* ignore */ }
+    }
+    return w;
+  }
+  function sendTo(win, url) {
+    if (!win || win.closed) return false;
+    try { win.location.href = url; return true; } catch (e) { return false; }
+  }
 
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
+    if (busy) return;
     clearError();
     var f = form.elements;
     if (f.website.value) return; // bots fill the hidden field
@@ -251,41 +289,117 @@
     var email = f.email.value.trim();
     if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError("That email address doesn't look right.", 'email');
 
-    var when = niceDay(chosen.day) + ' at ' + chosen.label + ' IST';
-    var mine = localDiffers(chosen.t) ? ' (' + fmtTime(chosen.t, localTz) + ' my time)' : '';
-    var lines = [
-      "Hi Deepak, I'd like to book an online demo.",
-      '',
-      'Date and time: ' + when + mine,
-      'Instrument: ' + instrument,
-      'Level: ' + f.level.value,
-      "Student's name: " + f.name.value.trim(),
-      'WhatsApp: ' + f.phone.value.trim()
-    ];
-    if (email) lines.push('Email: ' + email);
-    if (f.notes.value.trim()) lines.push('Notes: ' + f.notes.value.trim());
-    lines.push('', 'Please confirm and send me the Google Meet link.');
-    lastWaUrl = 'https://wa.me/' + schoolWa + '?text=' + encodeURIComponent(lines.join('\n'));
+    var p = {
+      when: niceDay(chosen.day) + ' at ' + chosen.label + ' IST',
+      mine: localDiffers(chosen.t) ? ' (' + fmtTime(chosen.t, localTz) + ' my time)' : '',
+      instrument: instrument, level: f.level.value, name: f.name.value.trim(), phone: f.phone.value.trim(),
+      email: email, notes: f.notes.value.trim(), start: chosen.t
+    };
 
-    var win = window.open(lastWaUrl, '_blank');
-    if (win) { try { win.opener = null; } catch (e) { /* ignore */ } }
-    showDone(when + mine, instrument, !win);
+    var win = openHolder();
+    busy = true;
+    submit.disabled = true;
+    submit.textContent = 'Booking your demo…';
+
+    // text/plain keeps this a "simple" request, which Apps Script accepts from any site
+    fetch(endpoint, { method: 'POST', body: JSON.stringify({
+      action: 'book', start: p.start, instrument: p.instrument, level: p.level, name: p.name,
+      phone: p.phone, email: p.email, notes: p.notes, website: f.website.value
+    }) })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (res && res.ok && res.booking) {
+          var b = res.booking;
+          lastWaUrl = waLink(["Hi Deepak, I've booked an online demo on the website.", ''].concat(details(p),
+            b.meetUrl ? ['Google Meet: ' + b.meetUrl] : [], ['', 'Please let me know if the time needs to change.']));
+          var opened = sendTo(win, lastWaUrl);
+          return showDone(p, b, opened);
+        }
+        if (res && res.code === 'off') { // automatic booking switched off in the script: send a request instead
+          lastWaUrl = waLink(["Hi Deepak, I'd like to book an online demo.", ''].concat(details(p), ['', 'Please confirm and send me the Google Meet link.']));
+          return showDone(p, null, sendTo(win, lastWaUrl));
+        }
+        if (win && !win.closed) win.close();
+        var msg = (res && res.error) || 'We could not book that slot. Please try again.';
+        if (res && (res.code === 'taken' || res.code === 'invalid')) {
+          chosen = null; renderSummary();
+          return load(true).then(function () { showError(msg); });
+        }
+        showError(msg, res && res.field);
+      })
+      .catch(function () {
+        if (win && !win.closed) win.close();
+        showError('We could not reach the booking system. Check your connection and try again, or WhatsApp us.');
+      })
+      .then(function () {
+        busy = false;
+        submit.disabled = false;
+        submit.innerHTML = submitLabel;
+      });
   });
 
   /* ---------- done ---------- */
 
-  function showDone(when, instrument, blocked) {
+  function gcalDate(iso) { return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, ''); }
+
+  function showDone(p, b, opened) {
+    var booked = !!b;
+    var url = booked ? (b.meetUrl || '') : '';
     grid.hidden = true;
     done.hidden = false;
-    done.querySelector('[data-done-when]').textContent = when;
-    done.querySelector('[data-done-what]').textContent = (data.minutes || 30) + '-minute online ' + instrument.toLowerCase() + ' demo with Deepak.';
+    done.querySelector('[data-done-kicker]').textContent = booked ? "You're booked" : 'Almost there';
+    done.querySelector('[data-done-when]').textContent = p.when + p.mine;
+    done.querySelector('[data-done-what]').textContent = (data.minutes || 30) + '-minute online ' + p.instrument.toLowerCase() + ' demo with Deepak.';
+
+    done.querySelector('.meet-box').hidden = !url;
+    done.querySelector('[data-meet-url]').textContent = url;
+    var join = done.querySelector('[data-join]');
+    join.hidden = !url; join.href = url || '#';
+    var gcal = done.querySelector('[data-gcal]');
+    gcal.hidden = !booked;
+    if (booked) {
+      gcal.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+        '&text=' + encodeURIComponent(p.instrument + ' demo, The Strings Theory') +
+        '&dates=' + gcalDate(b.start) + '/' + gcalDate(b.end) +
+        '&details=' + encodeURIComponent('Online ' + p.instrument.toLowerCase() + ' demo with Deepak, The Strings Theory.' + (url ? '\nJoin: ' + url : '')) +
+        (url ? '&location=' + encodeURIComponent(url) : '');
+    }
+    done.querySelector('[data-wa-title]').textContent = booked ? 'Let Deepak know' : 'Send your request';
+    done.querySelector('[data-wa-text]').textContent = booked
+      ? (opened ? 'WhatsApp has opened with your booking details filled in. Tap send so Deepak has them; he will message you if the time needs to change.'
+                : 'Send your booking details to Deepak on WhatsApp, so he can message you if the time needs to change.')
+      : (opened ? 'WhatsApp has opened with your request filled in. Tap send, and Deepak will confirm the time and send you the Google Meet link.'
+                : 'Send your request to Deepak on WhatsApp. He will confirm the time and send you the Google Meet link.');
     done.querySelector('[data-wa-open]').href = lastWaUrl;
-    done.querySelector('[data-blocked]').hidden = !blocked;
+    done.querySelector('[data-wa-open] span').textContent = opened ? 'Open WhatsApp again' : 'Send to Deepak on WhatsApp';
+    done.querySelector('[data-invite-note]').textContent = booked && b.invited ? 'We have also emailed a calendar invite to ' + p.email + '.' : '';
     done.focus();
     done.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 
+  var copyBtn = done.querySelector('[data-copy]');
+  var copyStatus = done.querySelector('[data-copy-status]');
+  copyBtn.addEventListener('click', function () {
+    var text = done.querySelector('[data-meet-url]').textContent;
+    function ok() {
+      copyBtn.textContent = 'Copied';
+      copyStatus.textContent = 'Meet link copied.';
+      setTimeout(function () { copyBtn.textContent = 'Copy link'; copyStatus.textContent = ''; }, 2500);
+    }
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); ok(); } catch (e) { copyStatus.textContent = 'Select the link and copy it.'; }
+      document.body.removeChild(ta);
+    }
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(ok, fallback);
+    else fallback();
+  });
+
   done.querySelector('[data-again]').addEventListener('click', function () {
+    form.reset();
+    if (wanted) { var r = form.querySelector('[name="instrument"][value="' + wanted + '"]'); if (r) r.checked = true; }
     chosen = null;
     done.hidden = true;
     grid.hidden = false;

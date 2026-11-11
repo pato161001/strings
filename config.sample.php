@@ -15,7 +15,7 @@ return [
         'phone_tel'     => '+917008896377',
         'whatsapp'      => '917008896377',          // country code + number, digits only
         'email'         => '',                      // e.g. hello@thestringstheory.in — leave empty to hide the Email button
-        'address'       => 'Basanti Nagar & Chhend Colony, Rourkela; SBI Colony, Kesora, Bhubaneswar',
+        'address'       => 'Rourkela, Basanti Nagar; Rourkela, Chhend Colony; Bhubaneswar, SBI Colony, Kesora',
         'hours'         => 'Opens 8 AM',            // TODO: confirm weekly hours with Deepak
         'instagram'     => 'https://www.instagram.com/the_stringstheory/',
         'maps_url'      => 'https://maps.google.com/?q=The+Strings+Theory+Basanti+Nagar+Rourkela',

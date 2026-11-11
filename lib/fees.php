@@ -15,9 +15,9 @@ function fee_instruments(): array
 function fee_modes(): array
 {
     return [
-        'basanti' => 'Basanti Nagar, Rourkela',
-        'chhend'  => 'Chhend Colony, Rourkela',
-        'kesora'  => 'SBI Colony, Bhubaneswar',
+        'basanti' => 'Rourkela, Basanti Nagar',
+        'chhend'  => 'Rourkela, Chhend Colony',
+        'kesora'  => 'Bhubaneswar, SBI Colony',
         'online'  => 'Online',
     ];
 }

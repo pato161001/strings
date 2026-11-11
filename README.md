@@ -1,6 +1,6 @@
 # The Strings Theory — website
 
-Seven-page site for The Strings Theory, a guitar and ukulele school with studios in Basanti Nagar and Chhend Colony (Rourkela) and SBI Colony, Kesora (Bhubaneswar): Home, About, Fees (with Razorpay payments), Tutorials (every playlist from the YouTube channel), a syllabus page each for guitar and ukulele, and Book a demo (pick a free slot, then send the request to Deepak on WhatsApp). The pages are plain `.html` files. A few small PHP scripts in `api/` supply the fees and take payments; a Google Apps Script in Deepak's Google account handles demo booking and the YouTube playlists. No database and no build step; it runs on any Hostinger-style shared hosting with PHP 8, and the same files also work on GitHub Pages (without payments).
+Seven-page site for The Strings Theory, a guitar and ukulele school with studios in Rourkela, Basanti Nagar; Rourkela, Chhend Colony; and Bhubaneswar, SBI Colony, Kesora: Home, About, Fees (with Razorpay payments), Tutorials (every playlist from the YouTube channel), a syllabus page each for guitar and ukulele, and Book a demo (pick a free slot, then send the request to Deepak on WhatsApp). The pages are plain `.html` files. A few small PHP scripts in `api/` supply the fees and take payments; a Google Apps Script in Deepak's Google account handles demo booking and the YouTube playlists. No database and no build step; it runs on any Hostinger-style shared hosting with PHP 8, and the same files also work on GitHub Pages (without payments).
 
 ## Going live on Hostinger
 
@@ -18,7 +18,7 @@ Upload the same files to the repo as they are. Never upload `config.php`: a GitH
 
 ## Filling in config.php
 
-**Contact details** (`school`): add the school's `email` to show the Email button (leave it empty to hide it), and the opening `hours` shown on the Home page. The studio addresses are written into the footer of each `.html` file and the Studios list on the Home page; edit those if a studio moves. The phone and WhatsApp number are also written into the four `.html` files (top bar buttons, enquiry form, Call buttons); if the number ever changes, search and replace `7008896377` across the `.html` files as well as in `config.php`.
+**Contact details** (`school`): add the school's `email` to show the Email button (leave it empty to hide it), and the opening `hours` shown on the Home page. The studio addresses are written into the footer of each `.html` file, the Studios list and posters on the Home page, the enquiry form and `lib/fees.php`; edit those if a studio moves. Always write them city first, e.g. "Rourkela, Basanti Nagar". The phone and WhatsApp number are also written into the four `.html` files (top bar buttons, enquiry form, Call buttons); if the number ever changes, search and replace `7008896377` across the `.html` files as well as in `config.php`.
 
 **Fees** (`fees`): the 2026–27 fee structure is already filled in `config.sample.php`, so copy that `fees` section into `config.php` as it is. The fee is the same for every instrument and for in class or online. Each class time (`slots`) has a monthly price for weekdays and weekends, for 4 or 8 classes a month. `discounts` sets the advance-payment discount (3 months 5%, 6 months 10%, 12 months 15%), and `usd_rate` (95) works out the approximate US$ prices. The amount charged is always worked out on the server from these numbers, so nobody can change the price from their browser.
 
@@ -44,11 +44,13 @@ The page shows Deepak's channel ([@stringstheory](https://www.youtube.com/@strin
 
 ### Online demo booking (Book a demo page)
 
-Students pick a date and a time on `book-demo.html` and fill in their details. Pressing **Send request on WhatsApp** opens WhatsApp with everything filled in (date and time in IST, instrument, level, name, number, email and notes), ready to send to Deepak on 070088 96377. Deepak confirms the time and sends the Google Meet link himself. The free times come from a small Google Apps Script that runs in Deepak's own Google account:
+Students pick a date and a time on `book-demo.html` and fill in their details. Pressing **Book my demo** books the slot straight into Deepak's Google Calendar with a Google Meet link, which the student sees at once with a Copy button. At the same moment WhatsApp opens with the booking details and the Meet link, ready to send to Deepak on 070088 96377, so he sees every booking and can message the student if the time needs to change.
 
 - **Availability comes from his Google Calendar.** Demo hours are set in the script (Monday to Saturday, 10 AM to 1 PM and 4 PM to 8 PM, 30-minute demos, up to 14 days ahead, at least 3 hours' notice). Anything already in his calendar blocks that time, so to take a slot off, add an event to his calendar.
-- **Requests don't block the calendar by themselves.** When Deepak confirms a demo, he should add it to his Google Calendar (with a Meet link from Calendar's "Add Google Meet video conferencing") so that slot shows as booked to the next student.
-- **Automatic booking is still in the script but switched off** (`DIRECT_BOOKING: false` in `CONFIG`). With it on, the script would create the calendar event and Meet link itself; the website would also need changing back to use it.
+- **Each booking becomes a calendar event** with the Meet link and the student's name, instrument, level, WhatsApp number and notes. Deepak also gets an email for every booking. If the student gives an email address, Google sends them a calendar invite too.
+- **No double bookings.** Two students can't take the same slot, and each WhatsApp number can only hold one upcoming demo.
+- **To reschedule or cancel,** move or delete the event in Google Calendar (the student's invite updates if they gave an email) and message them on WhatsApp. The slot frees up straight away.
+- **Requests only:** set `DIRECT_BOOKING: false` in the script's `CONFIG` and deploy a new version. The page then just opens WhatsApp with the request, and Deepak sends the Meet link himself.
 
 It works the same on GitHub Pages and Hostinger, and needs no server keys. Until it's set up, the page shows "Book your demo on WhatsApp" instead of the calendar.
 
@@ -100,7 +102,7 @@ assets/js/main.js                               enquiry form → opens WhatsApp 
 assets/js/fees.js                               fee table, notes and Razorpay checkout, from api/site.php
 assets/js/tutorials.js                          Tutorials: player, jump menu and a row per YouTube playlist, from the Apps Script
 assets/js/gallery.js                            circular photo gallery in the Home page's Private classes section
-assets/js/booker.js                             Book a demo: calendar, time slots, form, then the WhatsApp request
+assets/js/booker.js                             Book a demo: calendar, time slots, form, Meet link screen and the WhatsApp message to Deepak
 assets/js/booking-config.js                     the Google Apps Script link (one line), used by Book a demo and Tutorials
 apps-script/                                    the booking backend that runs in Deepak's Google account (see below)
 api/site.php                                    public settings from config.php (no keys)

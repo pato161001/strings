@@ -179,3 +179,28 @@
     done.querySelector('button').focus();
   });
 })();
+
+
+// About page: "Read my full story" pop-up
+(function () {
+  'use strict';
+  var dlg = document.getElementById('story');
+  if (!dlg || typeof dlg.showModal !== 'function') return; // without support the button just scrolls down the page
+  var opener = null;
+  function close() { dlg.close(); }
+  document.querySelectorAll('[data-open-story]').forEach(function (btn) {
+    btn.addEventListener('click', function (ev) {
+      ev.preventDefault();
+      opener = btn;
+      dlg.showModal();
+      document.documentElement.classList.add('story-open');
+      dlg.querySelectorAll('.story__body, .story__layout').forEach(function (b) { b.scrollTop = 0; });
+    });
+  });
+  dlg.querySelectorAll('[data-close-story]').forEach(function (b) { b.addEventListener('click', close); });
+  dlg.addEventListener('click', function (ev) { if (ev.target === dlg) close(); }); // click on the dark backdrop
+  dlg.addEventListener('close', function () {
+    document.documentElement.classList.remove('story-open');
+    if (opener) opener.focus();
+  });
+})();

@@ -7,7 +7,7 @@
  *                        calendar blocks that time).
  *  - GET  ?action=youtube  returns the YouTube channel's latest uploads and every public
  *                        playlist with its videos, for the website's Tutorials page.
- *  - POST {action:"book", ...}  (off unless CONFIG.DIRECT_BOOKING is true) books a slot: creates an event in his calendar with a
+ *  - POST {action:"book", ...}  books a slot: creates an event in his calendar with a
  *                        Google Meet link, invites the student if they gave an email,
  *                        and returns the Meet link to the website.
  *
@@ -35,9 +35,9 @@ var CONFIG = {
   SCHOOL_NAME: 'The Strings Theory',
   SCHOOL_WHATSAPP: '917008896377',
   INSTRUMENTS: ['Guitar', 'Ukulele'],
-  // The website sends demo requests to Deepak on WhatsApp, so booking straight into the
-  // calendar (with an automatic Meet link) is switched off. Set to true to turn it back on.
-  DIRECT_BOOKING: false,
+  // Book straight into the calendar with an automatic Google Meet link. The website also
+  // opens WhatsApp with the booking details for Deepak. Set to false to take requests only.
+  DIRECT_BOOKING: true,
   // Tutorials page
   YOUTUBE_CHANNEL_ID: 'UCOvTby3dG8NA0L4EDv21laQ',   // The Strings Theory (@stringstheory)
   YOUTUBE_CACHE_MINUTES: 60,       // new uploads and playlists show up on the site within this time

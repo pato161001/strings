@@ -68,10 +68,43 @@
   var endpoint = (window.TST_BOOKING_URL || '').trim();
   if (!endpoint || !window.fetch) return;
 
+  // Loading screen: placeholder playlists while the list arrives (the first load can take a few seconds)
+  var fallback = Array.prototype.slice.call(root.childNodes);
+  var loader = el('div', 'tut-loading');
+  loader.setAttribute('role', 'status');
+  loader.setAttribute('aria-live', 'polite');
+  loader.innerHTML =
+    '<div class="tut-loading__bar"><div class="container"><span class="tut-loading__eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>' +
+    '<span class="tut-loading__text">Tuning up… loading the lessons</span></div></div>' +
+    '<div class="container">' + [0, 1].map(function () {
+      return '<div class="sk-pl"><div class="sk sk--title"></div><div class="sk sk--meta"></div><div class="sk-row">' +
+        [0, 1, 2, 3].map(function () { return '<div class="sk-card"><div class="sk sk--thumb"></div><div class="sk sk--line"></div><div class="sk sk--line sk--short"></div></div>'; }).join('') +
+        '</div></div>';
+    }).join('') + '</div>';
+  root.textContent = '';
+  root.appendChild(loader);
+  player.classList.add('is-loading');
+  var settled = false;
+  function giveUp() {
+    if (settled) return;
+    settled = true;
+    player.classList.remove('is-loading');
+    root.textContent = '';
+    fallback.forEach(function (n) { root.appendChild(n); });
+  }
+  var slow = setTimeout(giveUp, 25000); // don't leave the loader up for ever
+
   fetch(endpoint + (endpoint.indexOf('?') === -1 ? '?' : '&') + 'action=youtube', { headers: { Accept: 'application/json' } })
     .then(function (r) { return r.json(); })
-    .then(function (data) { if (data && data.ok) build(data); })
-    .catch(function () { /* keep the fallback */ });
+    .then(function (data) {
+      if (settled) return;
+      if (!data || !data.ok) return giveUp();
+      settled = true;
+      clearTimeout(slow);
+      player.classList.remove('is-loading');
+      build(data);
+    })
+    .catch(giveUp);
 
   function build(data) {
     var ch = data.channel || {};
