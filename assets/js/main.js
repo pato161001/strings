@@ -184,23 +184,29 @@
 // About page: "Read my full story" pop-up
 (function () {
   'use strict';
-  var dlg = document.getElementById('story');
+  var dlg = document.getElementById('bio');
   if (!dlg || typeof dlg.showModal !== 'function') return; // without support the button just scrolls down the page
   var opener = null;
   function close() { dlg.close(); }
-  document.querySelectorAll('[data-open-story]').forEach(function (btn) {
+  document.querySelectorAll('[data-open-bio]').forEach(function (btn) {
     btn.addEventListener('click', function (ev) {
       ev.preventDefault();
       opener = btn;
       dlg.showModal();
-      document.documentElement.classList.add('story-open');
-      dlg.querySelectorAll('.story__body, .story__layout').forEach(function (b) { b.scrollTop = 0; });
+      document.documentElement.classList.add('bio-open');
+      dlg.querySelectorAll('.bio__body, .bio__layout').forEach(function (b) { b.scrollTop = 0; });
     });
   });
-  dlg.querySelectorAll('[data-close-story]').forEach(function (b) { b.addEventListener('click', close); });
+  dlg.querySelectorAll('[data-close-bio]').forEach(function (b) { b.addEventListener('click', close); });
   dlg.addEventListener('click', function (ev) { if (ev.target === dlg) close(); }); // click on the dark backdrop
   dlg.addEventListener('close', function () {
-    document.documentElement.classList.remove('story-open');
+    document.documentElement.classList.remove('bio-open');
     if (opener) opener.focus();
   });
+})();
+
+// Footer year
+(function () {
+  var y = document.querySelectorAll('[data-year]');
+  for (var i = 0; i < y.length; i++) y[i].textContent = new Date().getFullYear();
 })();

@@ -23,7 +23,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Caveat:wght@600;700&display=swap">
-<link rel="stylesheet" href="assets/css/style.css?v=39">
+<link rel="stylesheet" href="assets/css/style.css?v=41">
 </head>
 <body class="page-about">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -59,7 +59,7 @@
       <p>My name is Deepak Gochhayat, popularly known as Dittu. I am a musician, music educator, YouTuber, content creator and entrepreneur. I am also the founder of The Strings Theory, a music education institute built around my passion for teaching and sharing music.</p>
       <p>Born and brought up in Rourkela, Odisha, and currently based in Bhubaneswar, my journey has been quite unconventional…</p>
       <div class="actions about-hero__more">
-        <a class="btn btn--gold" href="#journey-h" data-open-story aria-haspopup="dialog">Read my full story</a>
+        <a class="btn btn--gold" href="#journey-h" data-open-bio aria-haspopup="dialog">Read my full story</a>
       </div>
     </div>
     <div class="portrait" data-reveal>
@@ -298,22 +298,76 @@
 
 </main>
 
+
+
+
+<footer class="site-footer">
+  <div class="container site-footer__top">
+    <div class="site-footer__about">
+      <a href="index.html" class="site-footer__logo"><img class="site-footer__brand" src="assets/img/logo-white.png?v=2" alt="The Strings Theory, home" width="800" height="469" loading="lazy"></a>
+      <p>Guitar and ukulele lessons with Deepak Gochhayat, in class or online. Learn the songs you love, with the theory behind them.</p>
+      <a class="btn btn--gold site-footer__cta" href="book-demo.html">Book an online demo</a>
+    </div>
+    <nav class="site-footer__col" aria-label="Footer">
+      <h2>Explore</h2>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About Deepak</a></li>
+        <li><a href="fees.html">Fees</a></li>
+        <li><a href="tutorials.html">Free tutorials</a></li>
+        <li><a href="guitar-syllabus.html">Guitar syllabus</a></li>
+        <li><a href="ukulele-syllabus.html">Ukulele syllabus</a></li>
+        <li><a href="book-demo.html">Book a demo</a></li>
+      </ul>
+    </nav>
+    <div class="site-footer__col">
+      <h2>Studios</h2>
+      <ul>
+        <li><a href="https://maps.google.com/?q=The+Strings+Theory+Basanti+Nagar+Rourkela" target="_blank" rel="noopener">Rourkela, Basanti Nagar</a><span>Near Rajasthan Seva Sadan</span></li>
+        <li><a href="https://maps.google.com/?q=Chhend+Colony+Rourkela" target="_blank" rel="noopener">Rourkela, Chhend Colony</a></li>
+        <li><a href="https://maps.google.com/?q=SBI+Colony+Kesora+Bhubaneswar" target="_blank" rel="noopener">Bhubaneswar, SBI Colony, Kesora</a></li>
+        <li>Online, anywhere in the world</li>
+      </ul>
+    </div>
+    <div class="site-footer__col">
+      <h2>Get in touch</h2>
+      <ul>
+        <li><a href="tel:+917008896377">Call 070088 96377</a></li>
+        <li><a href="https://wa.me/917008896377?text=Hi%2C%20I%27d%20like%20to%20know%20about%20lessons%20at%20The%20Strings%20Theory." target="_blank" rel="noopener">WhatsApp us</a></li>
+        <li><a href="#" data-site-email hidden>Email us</a></li>
+      </ul>
+      <div class="site-footer__social">
+        <a href="https://www.instagram.com/the_stringstheory/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a href="https://www.youtube.com/@stringstheory" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><polygon points="10 9 15 12 10 15 10 9" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="container site-footer__bottom">
+    <span>© <span data-year>2026</span> The Strings Theory. All rights reserved.</span>
+    <span>Rated 4.9 by students on Google</span>
+  </div>
+</footer>
+
 <!-- Full story pop-up (opened by "Read my full story") -->
-<dialog class="story" id="story" aria-labelledby="story-title">
-  <button class="story__close" type="button" data-close-story aria-label="Close">
+<dialog class="bio" id="bio" aria-labelledby="bio-title">
+  <button class="bio__close" type="button" data-close-bio aria-label="Close">
     <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
   </button>
-  <div class="story__layout">
-    <figure class="story__photo">
+  <div class="bio__layout">
+    <figure class="bio__photo">
       <img src="assets/img/deepak.jpg" alt="Deepak Gochhayat singing with his acoustic guitar" width="1000" height="1249" loading="lazy">
       <figcaption><b>Deepak Gochhayat</b><span>Dittu</span></figcaption>
     </figure>
-    <div class="story__body">
-      <p class="story__kicker">About me</p>
-      <h2 id="story-title" class="story__title">Deepak Gochhayat <span>(Dittu)</span></h2>
-      <p class="story__roles">Musician | Music educator | YouTuber</p>
+    <div class="bio__body">
+      <p class="bio__kicker">About me</p>
+      <h2 id="bio-title" class="bio__title">Deepak Gochhayat <span>(Dittu)</span></h2>
+      <p class="bio__roles">Musician | Music educator | YouTuber</p>
 
-      <p class="story__lead">From engineering to music: a journey driven by passion.</p>
+      <p class="bio__lead">From engineering to music: a journey driven by passion.</p>
       <p>My name is Deepak Gochhayat, popularly known as Dittu. I am a musician, music educator, YouTuber, content creator and entrepreneur. I am also the founder of The Strings Theory, a music education institute built around my passion for teaching and sharing music.</p>
       <p>Born and brought up in Rourkela, Odisha, and currently based in Bhubaneswar, my journey has been quite unconventional. I completed my B.Tech in Information Technology from NIST, Berhampur, in 2014. Although I initially pursued a career in engineering, my passion for music eventually inspired me to take a different direction. I decided to leave my engineering career behind and dedicate myself to music, teaching and entrepreneurship.</p>
 
@@ -349,33 +403,24 @@
       <p>Today, my focus is on growing The Strings Theory as a recognised music education brand, building my presence as a YouTuber and content creator, reaching a wider audience and inspiring more people to learn music.</p>
       <p>I don't consider myself someone who has figured everything out. I am still learning, experimenting, creating and building something meaningful every day.</p>
       <p>My philosophy is simple:</p>
-      <blockquote class="story__quote">“You don't have to be a musician to start learning music. You just have to start.”</blockquote>
+      <blockquote class="bio__quote">“You don't have to be a musician to start learning music. You just have to start.”</blockquote>
 
       <h3>Who am I?</h3>
-      <ul class="story__who">
+      <ul class="bio__who">
         <li><b>Musician:</b> Guitarist, performer and lifelong learner.</li>
         <li><b>Music Educator:</b> Helping aspiring musicians learn guitar and ukulele.</li>
         <li><b>YouTuber &amp; Content Creator:</b> Creating music tutorials, covers and educational videos.</li>
         <li><b>Entrepreneur:</b> Founder of The Strings Theory.</li>
       </ul>
-      <p class="story__end">One person, multiple roles, one passion: <strong>MUSIC</strong>.</p>
+      <p class="bio__end">One person, multiple roles, one passion: <strong>MUSIC</strong>.</p>
 
-      <div class="actions story__actions">
+      <div class="actions bio__actions">
         <a class="btn btn--gold" href="book-demo.html">Book an online demo</a>
-        <button class="btn btn--outline" type="button" data-close-story>Close</button>
+        <button class="btn btn--outline" type="button" data-close-bio>Close</button>
       </div>
     </div>
   </div>
 </dialog>
-
-
-<footer class="site-footer">
-  <div class="container site-footer__inner">
-    <img class="site-footer__brand" src="assets/img/logo-white.png?v=2" alt="The Strings Theory" width="800" height="469" loading="lazy">
-    <span>Rourkela, Basanti Nagar · Rourkela, Chhend Colony · Bhubaneswar, SBI Colony, Kesora</span>
-    <a href="https://www.instagram.com/the_stringstheory/" rel="noopener">Instagram</a>
-  </div>
-</footer>
 
 <!-- Floating contact buttons -->
 <nav class="fab-stack" id="fab-stack" aria-label="Contact us">
@@ -452,6 +497,6 @@
 </dialog>
 
 <script src="assets/js/site.js?v=1" defer></script>
-<script src="assets/js/main.js?v=9" defer></script>
+<script src="assets/js/main.js?v=10" defer></script>
 </body>
 </html>
