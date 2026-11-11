@@ -127,7 +127,7 @@ php -S localhost:8000 router.php
 
 ## Photos and credits
 
-Deepak's own photos: the home page hero (on stage, black and white), private and group class photos (`private-*.jpg`, `group-*.jpg`, `group-online.jpg`), the About portrait poster (`deepak-poster.jpg`; it includes hand-drawn band names, among them the NIRVANA wordmark), the About background (`about-stage.jpg`), the ukulele illustration (`deepak-ukulele.jpg`, also on the Home ukulele card and the ukulele syllabus) and the On stage gallery (`live-*.jpg`, `deepak.jpg`). The logo and favicons are made from the school's logo file.
+Deepak's own photos: the home page hero (on stage, black and white), private and group class photos (`private-*.jpg`, six online-lesson photos in the Home page's Private classes gallery, `group-*.jpg`, `group-online.jpg`), the About portrait poster (`deepak-poster.jpg`; it includes hand-drawn band names, among them the NIRVANA wordmark), the About background (`about-stage.jpg`), the ukulele illustration (`deepak-ukulele.jpg`, also on the Home ukulele card and the ukulele syllabus) and the On stage gallery (`live-*.jpg`, `deepak.jpg`). The logo and favicons are made from the school's logo file.
 
 The online-class screenshots are cropped so meeting codes and the parent's and students' name labels don't show. Get parents' permission before publishing photos of children.
 
