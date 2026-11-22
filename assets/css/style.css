@@ -233,6 +233,11 @@ a.hposter--black:hover, a.hposter--black:focus-visible, a.hposter--photo:hover, 
 .hp-meta { width: 100%; margin-top: 6cqw; padding: 3cqw 0; border-top: 3px solid currentColor; border-bottom: 3px solid currentColor; font: 700 4.2cqw/1.45 var(--body); letter-spacing: .04em; text-transform: uppercase; }
 .hp-foot { margin-top: 4.5cqw; font-size: 4.6cqw; font-weight: 600; }
 .hp-stars { margin-top: 2cqw; font-size: 7cqw; letter-spacing: 1cqw; color: var(--yellow); }
+.hp-quote { display: block; height: 15cqw; margin-top: 2cqw; font: 400 36cqw/.9 var(--display); }
+.hp-said { margin-top: 2cqw; font: 400 10.5cqw/1 var(--display); text-transform: uppercase; }
+.hp-stars--ink { color: var(--black); }
+.hp-said + .hp-small { margin-top: 4cqw; }
+#reviews { scroll-margin-top: 24px; }
 .hp-cta { display: inline-block; margin-top: 6cqw; padding: 3cqw 5.5cqw; background: var(--black); color: var(--yellow); font: 700 4.4cqw/1 var(--body); letter-spacing: .06em; text-transform: uppercase; }
 .hp-cta--yellow { background: var(--yellow); color: var(--black); }
 .hp-stamp {
