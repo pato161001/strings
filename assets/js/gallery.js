@@ -21,7 +21,7 @@
   var W = 400, H = 300;                 // 4:3 frame, in SVG units
   var R = 7, GAP = 10;                  // thumbnail radius and spacing
   var BIG = R * 700;                    // radius large enough to cover the frame
-  var DURATION = 0.4, AUTOPLAY_MS = 4500;
+  var DURATION = 0.4, AUTOPLAY_MS = 3000;
   var total = photos.length;
 
   function loadScript(src) {

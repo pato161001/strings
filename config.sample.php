@@ -45,7 +45,7 @@ return [
                 'weekend' => [4 => 4000, 8 => 6800],
             ],
         ],
-        'discounts'     => [1 => 0, 3 => 5, 6 => 10, 12 => 15],   // months paid at once => percent off the total
+        'discounts'     => [1 => 0, 6 => 15, 12 => 20],   // months paid at once => percent off the total
         'usd_rate'      => 95,                       // US$ prices on the fees page are rupees / this, rounded
         'class_minutes' => 40,
         'paypal_extra'  => 8,                        // percent added for PayPal payments (shown as a note)

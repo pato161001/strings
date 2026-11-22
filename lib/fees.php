@@ -40,7 +40,7 @@ function fee_class_counts(): array
     return array_map('intval', array_keys((array) ($first['weekday'] ?? [])));
 }
 
-/** Months a student can pay for at once => percent off, e.g. [1 => 0, 3 => 5]. */
+/** Months a student can pay for at once => percent off, e.g. [1 => 0, 6 => 15]. */
 function fee_discounts(): array
 {
     $out = [];
